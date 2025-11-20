@@ -54,7 +54,7 @@ export default function CategoryPage({ params }: Props) {
   return (
     <div>
       {/* Banner */}
-      <div className="bg-[url('/banner-img/VACCUM-banner.webp')] bg-cover bg-center h-64 md:h-72 flex items-center">
+      <div className="bg-[url('/banner-img/banner-image5.webp')] bg-cover bg-center h-64 md:h-72 flex items-center">
         <div className="flex flex-col justify-center ml-6 md:ml-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
             {normalizedSlug === "today-deals"

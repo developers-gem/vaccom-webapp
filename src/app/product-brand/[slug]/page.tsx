@@ -59,7 +59,7 @@ export default function BrandPage({ params }: Props) {
       {/* Banner */}
       <div
   style={{
-    backgroundImage: "url('/banner-img/VACCUM-banner.webp')",
+    backgroundImage: "url('/banner-img/banner-image5.webp')",
   }}
   className="bg-cover bg-center h-64 md:h-72 flex items-center"
 >
