@@ -39,7 +39,7 @@ const brandLinks = [
 const productLinks = [
   { name: "Corded Vacuums", img: "/category-image/Corded Vacuums.webp", slug: "corded vacuums" },
   { name: "Cordless Vacuums", img: "/category-image/Cordless-Vacuums.webp", slug: "cordless vacuums" },
-  { name: "Robots", img: "/category-image/robots.webp", slug: "robots" },
+  { name: "Robots", img: "/category-image/Robots.webp", slug: "robots" },
   { name: "Carpet Washers", img: "/category-image/Carpet Washers.webp", slug: "carpet washers" },
   { name: "Hard Floor Cleaners", img: "/category-image/Hard Floor Cleaners.webp", slug: "hard floor cleaners" },
   { name: "Steamers", img: "/category-image/steamer.png", slug: "steamers" },

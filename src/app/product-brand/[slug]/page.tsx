@@ -59,7 +59,7 @@ export default function BrandPage({ params }: Props) {
       {/* Banner */}
       <div
   style={{
-    backgroundImage: "url('https://vaccom.com.au/wp-content/uploads/2025/06/VACCUM-GP-2.jpg')",
+    backgroundImage: "url('/banner-img/VACCUM-banner.webp')",
   }}
   className="bg-cover bg-center h-64 md:h-72 flex items-center"
 >
