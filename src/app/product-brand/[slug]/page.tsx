@@ -57,12 +57,18 @@ export default function BrandPage({ params }: Props) {
   return (
     <div>
       {/* Banner */}
-      <div className="bg-[url('https://vaccom.com.au/wp-content/uploads/2025/06/VACCUM-GP-2.jpg')] bg-cover bg-center h-64 md:h-72 flex items-center">
-        <div className="flex flex-col justify-center ml-6 md:ml-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{brandName || "Brand"}</h1>
-          <span className="text-white text-xl md:text-2xl">Brand: {brandName}</span>
-        </div>
-      </div>
+      <div
+  style={{
+    backgroundImage: "url('https://vaccom.com.au/wp-content/uploads/2025/06/VACCUM-GP-2.jpg')",
+  }}
+  className="bg-cover bg-center h-64 md:h-72 flex items-center"
+>
+  <div className="flex flex-col justify-center ml-6 md:ml-12">
+    <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{brandName || "Brand"}</h1>
+    <span className="text-white text-xl md:text-2xl">Brand: {brandName}</span>
+  </div>
+</div>
+
 
       {/* Toolbar */}
       <div className="max-w-6xl mx-auto p-6">
