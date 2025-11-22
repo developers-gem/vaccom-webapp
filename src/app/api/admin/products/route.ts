@@ -1,3 +1,5 @@
+// src\app\api\admin\products\route.ts
+
 import { NextResponse } from "next/server";       // ✅ Next.js Response helper
 import { connectToDatabase } from "@/app/lib/mongodb";
 import Product from "@/models/Product";           // ✅ Your Product model
@@ -18,8 +20,6 @@ export async function GET() {
   }
 }
 
-// POST: add new product
-// POST: add new product
 // POST: add new product
 export async function POST(req: Request) {
   try {
@@ -44,16 +44,22 @@ export async function POST(req: Request) {
     const imagePaths: string[] = [];
     const fs = require("fs");
     const path = require("path");
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+   const uploadDir = "/var/www/vaccom-webapp/public/uploads";
 
-    for (const file of files) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const filename = `${Date.now()}-${file.name}`;
-      const filepath = path.join(uploadDir, filename);
-      await fs.promises.writeFile(filepath, buffer);
-      imagePaths.push(`/uploads/${filename}`);
-    }
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+  for (const file of files) {
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const filename = `${Date.now()}-${file.name}`;
+  const filepath = path.join(uploadDir, filename);
+
+  await fs.promises.writeFile(filepath, buffer);
+
+  // Save public URL
+  imagePaths.push(`/uploads/${filename}`);
+}
 
     const slug = generateSlug(name);
 

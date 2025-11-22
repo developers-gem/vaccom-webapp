@@ -9,7 +9,7 @@ export default function ContactUs() {
      <section
   className="w-full h-[400px] bg-cover bg-center flex items-center text-left px-5"
   style={{
-    backgroundImage: "url('/banner-img/VACCUM GP copy.webp')"
+    backgroundImage: "url('/banner-img/banner-image5.webp')"
   }}
 >
   <div className="text-white max-w-4xl space-y-4">

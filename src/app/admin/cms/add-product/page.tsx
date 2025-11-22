@@ -184,7 +184,7 @@ export default function AddProductPage() {
           onChange={handleChange}
           className="w-full border p-2 rounded"
         >
-          <option value="">Select Category (optional)</option>
+          <option value="">Select Category</option>
           {categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
 

@@ -1,76 +1,104 @@
+// src/app/api/admin/products/route.ts
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/app/lib/mongodb";
 import Product from "@/models/Product";
+import { generateSlug } from "@/utils/slug";
+import fs from "fs";
+import fsp from "fs/promises";
+import path from "path";
 
-// GET a single product by slug
-export async function GET(req: Request, context: any) {
+// VPS upload path (SAME as your upload-image route)
+const SERVER_UPLOAD_PATH = "/var/www/vaccom-webapp/public/uploads";
+
+// ---------------------------
+// GET ALL PRODUCTS
+// ---------------------------
+export async function GET() {
   try {
-    const { slug } = await context.params; // <-- await params
-    if (!slug) return NextResponse.json({ error: "Slug required" }, { status: 400 });
-
     await connectToDatabase();
-    const product = await Product.findOne({ slug }).lean();
-    if (!product) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-    return NextResponse.json(product);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    const products = await Product.find().lean();
+    return NextResponse.json(products);
+  } catch (err) {
+    console.error("GET products error:", err);
+    return NextResponse.json(
+      { error: "Failed to fetch products" },
+      { status: 500 }
+    );
   }
 }
 
-// PUT update product (including toggle isActive or update stock)
-export async function PUT(req: Request, context: any) {
+// ---------------------------
+// ADD NEW PRODUCT
+// ---------------------------
+export async function POST(req: Request) {
   try {
-    const { slug } = await context.params; // <-- await params
-    if (!slug) return NextResponse.json({ error: "Slug required" }, { status: 400 });
-
-    const body = await req.json();
     await connectToDatabase();
 
-    // Ensure stock is a number and auto-update isOutOfStock
-    if (body.stock !== undefined) {
-      body.stock = Number(body.stock);
-      body.isOutOfStock = body.stock <= 0;
+    const formData = await req.formData();
+
+    const name = formData.get("name") as string;
+    const price = Number(formData.get("price"));
+    const salePrice = formData.get("salePrice")
+      ? Number(formData.get("salePrice"))
+      : null;
+    const shortDesc = formData.get("shortDesc") as string;
+    const longDesc = formData.get("longDesc") as string;
+    const brand = formData.get("brand") as string;
+    const category = formData.get("category") as string;
+    const stock = Number(formData.get("stock") || 0);
+    const isTodayDeal = formData.get("isTodayDeal") === "true";
+
+    // ---------------------------
+    // SAVE IMAGES TO VPS
+    // ---------------------------
+    const files = formData.getAll("images") as File[];
+    const imagePaths: string[] = [];
+
+    // Create uploads directory if missing
+    if (!fs.existsSync(SERVER_UPLOAD_PATH)) {
+      await fsp.mkdir(SERVER_UPLOAD_PATH, { recursive: true });
     }
 
-    // If toggle request (just flip isActive)
-    if (body.toggleActive === true) {
-      const product = await Product.findOne({ slug });
-      if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    for (const file of files) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const filename = `${Date.now()}-${file.name}`;
+      const filepath = path.join(SERVER_UPLOAD_PATH, filename);
 
-      product.isActive = !product.isActive;
-      await product.save();
-      return NextResponse.json(product.toObject());
+      await fsp.writeFile(filepath, buffer);
+
+      // Browser-accessible path
+      imagePaths.push(`/uploads/${filename}`);
     }
 
-    const updatedProduct = await Product.findOneAndUpdate(
-      { slug },
-      { $set: body },
-      { new: true }
-    ).lean();
+    // ---------------------------
+    // CREATE PRODUCT
+    // ---------------------------
+    const slug = generateSlug(name);
 
-    if (!updatedProduct)
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    const newProduct = await Product.create({
+      name,
+      slug,
+      price,
+      salePrice,
+      shortDesc,
+      longDesc,
+      brand,
+      category,
+      images: imagePaths,
+      stock,
+      isOutOfStock: stock <= 0,
+      isTodayDeal,
+    });
 
-    return NextResponse.json(updatedProduct);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
-}
-
-// DELETE a product by slug
-export async function DELETE(req: Request, context: any) {
-  try {
-    const { slug } = await context.params; // <-- await params
-    if (!slug) return NextResponse.json({ error: "Slug required" }, { status: 400 });
-
-    await connectToDatabase();
-    const deleted = await Product.findOneAndDelete({ slug }).lean();
-
-    if (!deleted) return NextResponse.json({ error: "Product not found" }, { status: 404 });
-
-    return NextResponse.json({ message: "Product deleted" });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json(newProduct, { status: 201 });
+  } catch (err) {
+    console.error("POST product error:", err);
+    return NextResponse.json({ error: "Failed to add product" }, { status: 500 });
   }
 }

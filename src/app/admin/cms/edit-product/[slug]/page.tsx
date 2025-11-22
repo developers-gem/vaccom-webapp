@@ -64,25 +64,20 @@ export default function EditProductPage() {
   // Type-safe handleChange
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const target = e.target;
+    const { name, type, checked, files, value } = target as HTMLInputElement;
 
-    if (target instanceof HTMLInputElement) {
-      const { name, type, checked, files, value } = target;
-
-      if (type === "checkbox") {
-        setProduct(prev => ({ ...prev, isTodayDeal: checked }));
-      } else if (type === "file" && files) {
-        setNewImages(prev => [...prev, ...Array.from(files)]);
-      } else if (name === "stock") {
-        const stockValue = Number(value);
-        setProduct(prev => ({ ...prev, stock: stockValue, isOutOfStock: stockValue <= 0 }));
-      } else if (name === "salePrice") {
-        setProduct(prev => ({ ...prev, salePrice: value ? Number(value) : undefined }));
-      } else {
-        setProduct(prev => ({ ...prev, [name]: value }));
-      }
+    if (type === "checkbox") {
+      setProduct(prev => ({ ...prev, isTodayDeal: checked }));
+    } else if (type === "file" && files) {
+      setNewImages(prev => [...prev, ...Array.from(files)]);
+    } else if (name === "stock") {
+      const stockValue = Number(value);
+      setProduct(prev => ({ ...prev, stock: stockValue, isOutOfStock: stockValue <= 0 }));
+    } else if (name === "salePrice") {
+      setProduct(prev => ({ ...prev, salePrice: value ? Number(value) : undefined }));
+    } else if (name === "price") {
+      setProduct(prev => ({ ...prev, price: Number(value) }));
     } else {
-      // textarea or select
-      const { name, value } = target as HTMLTextAreaElement | HTMLSelectElement;
       setProduct(prev => ({ ...prev, [name]: value }));
     }
   };
@@ -95,39 +90,45 @@ export default function EditProductPage() {
     setNewImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleUploadLocalImages = async () => {
-    if (!slug || newImages.length === 0) return;
-
-    const formData = new FormData();
-    newImages.forEach(file => formData.append("images", file));
-
-    try {
-      const res = await fetch(`/api/admin/products/${slug}/upload-image`, {
-        method: "POST",
-        body: formData,
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setProduct(prev => ({ ...prev, images: [...prev.images, ...data.urls] }));
-        setNewImages([]);
-      } else {
-        const data = await res.json();
-        alert("Upload failed: " + data.error);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Upload error");
-    }
-  };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
+      let uploadedImages: string[] = [];
+
+      // Upload new images if any
+      if (newImages.length > 0) {
+        const formData = new FormData();
+        newImages.forEach(file => formData.append("images", file));
+
+        const uploadRes = await fetch(`/api/admin/products/${slug}/upload-image`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (uploadRes.ok) {
+          const data = await uploadRes.json();
+          uploadedImages = data.urls;
+        } else {
+          const data = await uploadRes.json();
+          alert("Image upload failed: " + data.error);
+          return;
+        }
+      }
+
+      // Merge uploaded images with existing ones
+      const productToUpdate = {
+        ...product,
+        images: [...product.images, ...uploadedImages],
+      };
+
+      // PUT request to update product
       const res = await fetch(`/api/admin/products/${slug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
+        body: JSON.stringify(productToUpdate),
       });
+
       if (res.ok) {
         alert("Product updated successfully");
         router.push("/admin/cms/product-list");
@@ -137,6 +138,7 @@ export default function EditProductPage() {
       }
     } catch (err) {
       console.error(err);
+      alert("An error occurred");
     }
   };
 
@@ -202,7 +204,6 @@ export default function EditProductPage() {
             ))}
           </div>
         )}
-        <button type="button" onClick={handleUploadLocalImages} className="bg-blue-500 text-white px-4 py-2 rounded">Upload Selected Images</button>
 
         <div className="flex gap-4">
           <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">Update Product</button>
