@@ -138,6 +138,7 @@ export default function AddProductPage() {
           value={product.salePrice || ""}
           onChange={handleChange}
           placeholder="Sale Price (optional)"
+
           className="w-full border p-2 rounded"
         />
 
@@ -155,7 +156,7 @@ export default function AddProductPage() {
           name="shortDesc"
           value={product.shortDesc || ""}
           onChange={handleChange}
-          placeholder="Short Description (optional)"
+          placeholder="Short Description"
           className="w-full border p-2 rounded"
         />
 
@@ -163,7 +164,7 @@ export default function AddProductPage() {
           name="longDesc"
           value={product.longDesc || ""}
           onChange={handleChange}
-          placeholder="Long Description (optional)"
+          placeholder="Long Description "
           className="w-full border p-2 rounded"
         />
 
