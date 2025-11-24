@@ -8,7 +8,7 @@ export async function GET(
   context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = context.params;
+const { slug } = await context.params;   // ✅ required by Next.js to avoid warning
     if (!slug) {
       return NextResponse.json({ error: "Slug required" }, { status: 400 });
     }

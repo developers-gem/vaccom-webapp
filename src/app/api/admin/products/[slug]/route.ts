@@ -1,5 +1,3 @@
-// src/app/api/admin/products/route.ts
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -13,29 +11,110 @@ import fs from "fs";
 import fsp from "fs/promises";
 import path from "path";
 
-// VPS upload path (SAME as your upload-image route)
 const SERVER_UPLOAD_PATH = "/var/www/vaccom-webapp/public/uploads";
 
-// ---------------------------
-// GET ALL PRODUCTS
-// ---------------------------
-export async function GET() {
+// ---------------------------------------
+// GET PRODUCT BY SLUG
+// ---------------------------------------
+export async function GET(req: Request, { params }: any) {
   try {
     await connectToDatabase();
-    const products = await Product.find().lean();
-    return NextResponse.json(products);
+    const { slug } = params;
+
+    const product = await Product.findOne({ slug }).lean();
+    if (!product) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(product);
   } catch (err) {
-    console.error("GET products error:", err);
+    console.error("GET product by slug error:", err);
     return NextResponse.json(
-      { error: "Failed to fetch products" },
+      { error: "Failed to fetch product" },
       { status: 500 }
     );
   }
 }
 
-// ---------------------------
-// ADD NEW PRODUCT
-// ---------------------------
+// ---------------------------------------
+// UPDATE PRODUCT BY SLUG
+// ---------------------------------------
+export async function PUT(req: Request, { params }: any) {
+  try {
+    await connectToDatabase();
+    const { slug } = params;
+
+    const body = await req.json();
+
+    const updated = await Product.findOneAndUpdate(
+      { slug },
+      {
+        name: body.name,
+        price: body.price,
+        salePrice: body.salePrice || null,
+        shortDesc: body.shortDesc,
+        longDesc: body.longDesc,
+        brand: body.brand,
+        category: body.category,
+        images: body.images,
+        stock: body.stock,
+        isOutOfStock: body.stock <= 0,
+        isTodayDeal: body.isTodayDeal,
+      },
+      { new: true }
+    );
+
+    if (!updated) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(updated);
+  } catch (err) {
+    console.error("PUT update product error:", err);
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 }
+    );
+  }
+}
+
+// ---------------------------------------
+// DELETE PRODUCT BY SLUG
+// ---------------------------------------
+export async function DELETE(req: Request, { params }: any) {
+  try {
+    await connectToDatabase();
+    const { slug } = params;
+
+    const deleted = await Product.findOneAndDelete({ slug });
+
+    if (!deleted) {
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("DELETE product error:", err);
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 }
+    );
+  }
+}
+
+// ---------------------------------------
+// IMPORTANT: Add Product should be in /api/admin/products (not here)
+// Keeping it because you already have it
+// ---------------------------------------
 export async function POST(req: Request) {
   try {
     await connectToDatabase();
@@ -54,13 +133,9 @@ export async function POST(req: Request) {
     const stock = Number(formData.get("stock") || 0);
     const isTodayDeal = formData.get("isTodayDeal") === "true";
 
-    // ---------------------------
-    // SAVE IMAGES TO VPS
-    // ---------------------------
     const files = formData.getAll("images") as File[];
     const imagePaths: string[] = [];
 
-    // Create uploads directory if missing
     if (!fs.existsSync(SERVER_UPLOAD_PATH)) {
       await fsp.mkdir(SERVER_UPLOAD_PATH, { recursive: true });
     }
@@ -72,13 +147,9 @@ export async function POST(req: Request) {
 
       await fsp.writeFile(filepath, buffer);
 
-      // Browser-accessible path
       imagePaths.push(`/uploads/${filename}`);
     }
 
-    // ---------------------------
-    // CREATE PRODUCT
-    // ---------------------------
     const slug = generateSlug(name);
 
     const newProduct = await Product.create({
@@ -99,6 +170,9 @@ export async function POST(req: Request) {
     return NextResponse.json(newProduct, { status: 201 });
   } catch (err) {
     console.error("POST product error:", err);
-    return NextResponse.json({ error: "Failed to add product" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to add product" },
+      { status: 500 }
+    );
   }
 }

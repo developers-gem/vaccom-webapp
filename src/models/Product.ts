@@ -12,41 +12,70 @@ export interface IProduct extends Document {
   images: string[];
   slug: string;
   isTodayDeal?: boolean;
-  stock: number;           // ✅ new field
-  isOutOfStock: boolean;   // ✅ optional derived field
-  isActive: Boolean; 
+  stock: number;
+  isOutOfStock: boolean;
+  isActive: boolean;
 }
 
-const ProductSchema: Schema<IProduct> = new mongoose.Schema({
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
-  salePrice: { type: Number },
-  shortDesc: { type: String, required: true },
-  longDesc: { type: String, required: true },
-  brand: { type: String, required: true },
-  category: { type: String, required: true },
-  images: { type: [String], default: [] },
-  slug: { type: String, required: true, unique: true },
-  isTodayDeal: { type: Boolean, default: false },
-  stock: { type: Number, required: true, default: 0 },        // new
-  isOutOfStock: { type: Boolean, default: false },             // new
-  isActive: { type: Boolean, default: true },
+const ProductSchema = new mongoose.Schema<IProduct>(
+  {
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    salePrice: { type: Number },
 
-});
+    shortDesc: { type: String, required: true },
+    longDesc: { type: String, required: true },
 
-// Auto-generate slug from name
+    brand: { type: String, required: true },
+    category: { type: String, required: true },
+
+    images: { type: [String], default: [] },
+
+    slug: { type: String, unique: true },   // ❗ removed required:true
+
+    isTodayDeal: { type: Boolean, default: false },
+
+    stock: { type: Number, required: true, default: 0 },
+    isOutOfStock: { type: Boolean, default: false },
+
+    isActive: { type: Boolean, default: true }
+  },
+  { timestamps: true }
+);
+
+/* -------------------------------------------- */
+/*  PRE-SAVE HOOK (for create only)             */
+/* -------------------------------------------- */
 ProductSchema.pre<IProduct>("save", function (next) {
   if (!this.slug) {
     this.slug = slugify(this.name, { lower: true, strict: true });
   }
 
-  // Automatically set out of stock if stock <= 0
   this.isOutOfStock = this.stock <= 0;
 
   next();
 });
 
+/* -------------------------------------------- */
+/*  PRE-UPDATE HOOK (for PUT / findOneAndUpdate)*/
+/* -------------------------------------------- */
+ProductSchema.pre("findOneAndUpdate", function (next) {
+  const update: any = this.getUpdate();
+
+  // Auto-set out-of-stock value
+  if (update.stock !== undefined) {
+    update.isOutOfStock = update.stock <= 0;
+  }
+
+  // Regenerate slug if name changes
+  if (update.name) {
+    update.slug = slugify(update.name, { lower: true, strict: true });
+  }
+
+  next();
+});
+
 const Product: Model<IProduct> =
-  mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);
+  mongoose.models.Product || mongoose.model("Product", ProductSchema);
 
 export default Product;
