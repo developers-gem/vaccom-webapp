@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   verification: {
     google: "ij_JShEYQdtkzQln9bIYAsQgPnaHa4QqfDrkuCYMjtU",
   },
+  alternates: {
+    canonical: "https://vaccom.com.au/",
+  },
 };
 
 export default function RootLayout({
@@ -22,7 +25,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* ✅ Google Analytics Script in HEAD */}
+        {/* ✅ Canonical Tag */}
+        <link rel="canonical" href="https://vaccom.com.au/" />
+
+        {/* ✅ Google Analytics */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-9X6NTHTDFK"
