@@ -168,7 +168,7 @@ export default function Navbar() {
             </li>
 
             <li className="hover:text-white px-3 py-4 hover:bg-black">
-              <Link href="/product-category/today-deals">Today's Deals</Link>
+              <Link href="/product-category/today-deals">Black Friday Sale</Link>
             </li>
             <li className="hover:text-white px-3 py-4 hover:bg-black">
               <Link href="/repair-and-services">Repair & Services</Link>
@@ -315,7 +315,7 @@ export default function Navbar() {
       onClick={() => setMobileMenuOpen(false)}
       className="block hover:text-red-600"
     >
-      Today's Deals
+      Black Friday Sale
     </Link>
 
     <Link

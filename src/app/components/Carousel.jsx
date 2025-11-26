@@ -9,7 +9,7 @@ import 'swiper/css/navigation';
 
 export default function Carousel() {
   const slides = [
-    "/banner-img/BLACK FRIDAY SALE_ 1.jpg",
+    "/banner-img/black friday web banner .webp",
     "/banner-img/banner-img2.webp",
     "/banner-img/banner-img3.webp",
   ];
@@ -44,8 +44,8 @@ export default function Carousel() {
                   sm:h-[350px]  /* larger mobile */
                   md:h-[450px]  /* tablets */
                   lg:h-[550px]  /* laptops */
-                  xl:h-[650px]  /* desktops */
-                  2xl:h-[750px] /* very large screens (16” MacBook / 4K) */
+                  xl:h-[600px]  /* desktops */
+                  2xl:h-[500px] /* very large screens (16” MacBook / 4K) */
                 "
               />
             </div>

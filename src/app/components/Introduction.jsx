@@ -15,18 +15,18 @@ export default function Introduction() {
         {/* Left Section */}
         <div className="w-full md:w-[50%] bg-white/80 md:bg-transparent backdrop-blur-sm md:backdrop-blur-0 p-4 sm:p-6 md:p-0 rounded-lg md:rounded-none">
           <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#DC1515] font-bold leading-snug sm:leading-tight mb-4 sm:mb-5">
-            Find the Perfect Vacuum for you at Vaccom!
+            Find the Perfect Vaccom for you at Vaccom!
           </h2>
 
           <p className="text-sm sm:text-base md:text-[17px] text-[#0A0A0A] mb-4 sm:mb-5 leading-relaxed">
             At Vaccom, we know every home is different. That’s why we offer a
-            wide range of top-brand vacuum cleaners — from powerful upright
-            models and versatile stick vacuums to handy handheld options.
+            wide range of top-brand Vaccom cleaners — from powerful upright
+            models and versatile stick Vaccoms to handy handheld options.
           </p>
 
           <p className="text-sm sm:text-base md:text-[17px] text-[#0A0A0A] mb-4 sm:mb-5 leading-relaxed">
             Whether it’s pet hair, busy family spaces, or hassle-free cleaning
-            you need, we have the perfect vacuum for you.
+            you need, we have the perfect Vaccom for you.
           </p>
 
           <p className="text-sm sm:text-base md:text-[17px] text-[#0A0A0A] mb-4 sm:mb-5 leading-relaxed">
