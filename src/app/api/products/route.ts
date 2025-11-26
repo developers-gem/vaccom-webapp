@@ -1,10 +1,11 @@
-import { NextResponse } from "next/server"; 
+import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import { connectToDatabase } from "@/app/lib/mongodb";
 
 export async function GET(req: Request) {
   try {
     await connectToDatabase();
+
     const url = new URL(req.url);
     const brand = url.searchParams.get("brand");
     const category = url.searchParams.get("category");
@@ -36,16 +37,22 @@ export async function GET(req: Request) {
 
     const products = await Product.find(filter).lean();
 
-    // ✅ Ensure both price & salePrice are always numbers
+    // 🔥 Prevents frontend crash (always return array)
+    if (!Array.isArray(products)) {
+      console.error("❌ Products API returned non-array:", products);
+      return NextResponse.json([], { status: 200 });
+    }
+
+    // Fix price fields
     const fixedProducts = products.map((p) => ({
       ...p,
-      price: p.price ? Number(p.price) : 0,
-      salePrice: p.salePrice ? Number(p.salePrice) : 0,
+      price: Number(p.price || 0),
+      salePrice: Number(p.salePrice || 0),
     }));
 
     return NextResponse.json(fixedProducts);
   } catch (err: any) {
-    console.error(err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error("❌ Products API error:", err);
+    return NextResponse.json({ error: err.message || "Server error" }, { status: 500 });
   }
 }

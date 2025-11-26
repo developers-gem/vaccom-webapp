@@ -5,8 +5,8 @@ import Providers from "./components/Providers";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  title: "Top Australia Vacuum Cleaner Specialists | Vaccom AU",
-  description: "Shop vacuums, robot cleaners, carpet washers, steamers, bags, filters and accessories at Vaccom. Quality brands, fast delivery and expert vacuum repairs.",
+  title: "Vaccom Australia | Premium Vacuum & Cleaning Solutions",
+  description: "Vaccom Australia provides high-quality vacuum systems, cleaning equipment, and reliable maintenance services. Trusted solutions for homes and businesses across Australia.",
   verification: {
     google: "ij_JShEYQdtkzQln9bIYAsQgPnaHa4QqfDrkuCYMjtU",
   },
