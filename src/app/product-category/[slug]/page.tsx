@@ -10,13 +10,15 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
     title: "Vaccom AU",
     description:
       "Best vacuum cleaners, accessories and cleaning equipment in Australia. Fast delivery and expert support.",
+          canonical: "https://vaccom.com.au",
+
   };
 
   return {
     title: seo.title,
     description: seo.description,
     alternates: {
-      canonical: `https://vaccom.com.au/product-category/${normalizedSlug}`,
+      canonical: seo.canonical, // use canonical from seoData
     },
   };
 }

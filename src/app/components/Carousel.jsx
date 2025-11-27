@@ -10,8 +10,8 @@ import 'swiper/css/navigation';
 export default function Carousel() {
   const slides = [
     "/banner-img/black friday web banner .webp",
-    "/banner-img/banner-img2.webp",
-    "/banner-img/banner-img3.webp",
+    "/banner-img/vaccomweb1.webp",
+    "/banner-img/vaccomweb2.webp",
   ];
 
   return (

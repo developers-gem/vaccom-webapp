@@ -2,41 +2,37 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/app/lib/mongodb";
 import Product from "@/models/Product";
 
-// GET /api/products/category/[slug]
 export async function GET(
   req: Request,
   context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug: rawSlug } = await context.params;
-    if (!rawSlug) {
+    const { slug } = await context.params;
+
+    if (!slug) {
       return NextResponse.json({ error: "Slug required" }, { status: 400 });
     }
 
     await connectToDatabase();
 
-    // Decode, convert %26 to &, replace dashes with spaces, trim
-    const decodedSlug = decodeURIComponent(rawSlug)
-      .replace(/-/g, " ")
-      .replace(/%26/g, "&")
-      .replace(/\s+/g, " ")
-      .trim();
-    console.log("🔎 Category filter (slug):", decodedSlug);
+    // Slug stays exactly as it is
+    const cleanSlug = decodeURIComponent(slug).toLowerCase();
+
+    console.log("🔎 Using slug:", cleanSlug);
 
     let filter: any = {};
 
-    // Today deals special case
-    if (decodedSlug.toLowerCase() === "today deals") {
+    if (cleanSlug === "today-deals") {
       filter.isTodayDeal = true;
     } else {
-      filter.category = { $regex: new RegExp(decodedSlug, "i") }; // loose case-insensitive match
+      filter.categorySlug = cleanSlug; // 🔥 categorySlug in DB
     }
 
     const products = await Product.find(filter).lean();
 
-    if (!products || products.length === 0) {
+    if (!products.length) {
       return NextResponse.json(
-        { message: "No products found for this category" },
+        { message: "No products found" },
         { status: 404 }
       );
     }

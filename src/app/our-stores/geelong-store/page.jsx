@@ -1,6 +1,13 @@
 import { link } from 'fs';
 import Link from 'next/link';
-
+export const metadata = {
+  title: "Vacuum Cleaner Shop Geelong – Repairs & Sales",
+  description:
+    "Vacuum Cleaner Shop in Geelong — top vacuums, accessories & expert vacuum cleaner repairs. Visit us for fast service and great deals! Huge brand selection too.",
+  alternates: {
+    canonical: "https://vaccom.com.au/our-stores/geelong-store",
+  },
+};
 export default function GeelongPage() {
 	return (
 		<main>

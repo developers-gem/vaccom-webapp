@@ -48,11 +48,5 @@
     "id": "10",
     "name": "Vacuum Bags & Filters",
     "slug": "vacuum-bags-filters"
-  },
-  {
-    "id": "782f2633-55d5-416f-bf0c-be43748b8018",
-    "name": "abc",
-    "slug": "abc",
-    "imageUrl": "blob:http://localhost:3000/469f76ee-aed1-4c3d-9fd5-edf9a010606c"
   }
 ]

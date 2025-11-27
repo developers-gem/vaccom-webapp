@@ -1,55 +1,61 @@
-// vacuum-app (1)\vacuum-app\src\app\product-category\[slug]
-
 "use client";
 
 import ProductCard from "@/app/components/ProductCard";
 import ProductToolbar from "@/app/components/ProductToolbar";
 import { useState, useEffect } from "react";
-import { generateSlug } from "@/utils/slug";
 
 interface Props {
   params: { slug: string };
 }
 
-// ✅ make a "pretty label" from slug
-function toTitleCase(slug: string) {
-  return slug
-    .replace(/-/g, " ") // dashes → spaces
-    .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize
+// Map slug → DB category
+const CATEGORY_MAP: Record<string, string> = {
+  "accessories-%26-parts": "Accessories & Parts",
+  "vacuum-bags-%26-filters": "Vacuum Bags & Filters",
+  "corded-vacuums": "Corded Vacuums",
+  "cordless-vacuums": "Cordless Vacuums",
+  "robots": "Robots",
+  "carpet-washers": "Carpet Washers",
+  "hard-floor-cleaners": "Hard Floor Cleaners",
+  "steamers": "Steamers",
+  "commercial": "Commercial",
+  "cleaning-chemicals": "Cleaning Chemicals",
+};
+
+// Convert slug → readable category (fallback if not in map)
+function formatCategoryFromSlug(slug: string) {
+  return CATEGORY_MAP[slug] || decodeURIComponent(slug)
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export default function CategoryPage({ params }: Props) {
-  const rawSlug = decodeURIComponent(params.slug); // always decode
-  const normalizedSlug = rawSlug.toLowerCase();
+  const rawSlug = params.slug;
+  const categoryName = formatCategoryFromSlug(rawSlug); // ✅ exact DB match
 
   const [sort, setSort] = useState("");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [products, setProducts] = useState<any[]>([]);
 
-  // ✅ fetch products using slug (not category name)
   useEffect(() => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
-    const apiUrl =
-      normalizedSlug === "today-deals"
-        ? `${baseUrl}/api/products?isTodayDeal=true`
-        : `${baseUrl}/api/products?category=${encodeURIComponent(
-            normalizedSlug
-          )}`;
 
-    console.log("Fetching products from:", apiUrl);
+    const apiUrl =
+      rawSlug === "today-deals"
+        ? `${baseUrl}/api/products?isTodayDeal=true`
+        : `${baseUrl}/api/products?category=${encodeURIComponent(categoryName)}`;
+
+    console.log("FETCH URL:", apiUrl);
+    console.log("CATEGORY SENT:", categoryName);
 
     fetch(apiUrl, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         const arr = Array.isArray(data) ? data : data.products || [];
-        const productsWithBadges = arr.map((p: any) => ({
-          ...p,
-          badge: p.salePrice ? "sale" : p.badge || undefined,
-        }));
-        setProducts(productsWithBadges);
+        setProducts(arr);
       })
       .catch((err) => console.error("❌ Fetch failed", err));
-  }, [normalizedSlug]);
+  }, [rawSlug, categoryName]);
 
   return (
     <div>
@@ -57,45 +63,16 @@ export default function CategoryPage({ params }: Props) {
       <div className="bg-[url('/banner-img/banner-image5.webp')] bg-cover bg-center h-64 md:h-72 flex items-center">
         <div className="flex flex-col justify-center ml-6 md:ml-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-            {normalizedSlug === "today-deals"
-              ? "Today's Deals"
-              : toTitleCase(normalizedSlug)}
+            {categoryName}
           </h1>
           <span className="text-white text-xl md:text-2xl">
-            {normalizedSlug === "today-deals"
-              ? "Products on Today's Deals"
-              : `Category: ${toTitleCase(normalizedSlug)}`}
+            Category: {categoryName}
           </span>
         </div>
       </div>
 
-      {/* Today Deals paragraph */}
-      {normalizedSlug === "today-deals" && (
-        <div className="max-w-6xl mx-auto p-6 text-lg text-gray-700">
-          <h5 className="mt-10">
-            <b>Vacuum Cleaners, Parts & Repairs — All in One Place</b>
-          </h5>
-          <p className="mt-5 mb-3">
-            Whether you’re shopping for a new vacuum, replacing parts, or
-            booking a repair, you can do it all right here. We offer fast
-            Australia-wide shipping and expert support from our experienced
-            vacuum technicians.
-          </p>
-          <p>
-            Not sure which model suits your home? Contact us or visit one of our
-            Melbourne stores — we’ll help you find the right fit.
-          </p>
-        </div>
-      )}
-
       {/* Products */}
       <div className="max-w-6xl mx-auto p-6">
-        {/* <h1 className="text-3xl font-bold mb-6">
-          {normalizedSlug === "today-deals"
-            ? "Today's Deals"
-            : toTitleCase(normalizedSlug)}
-        </h1> */}
-
         <ProductToolbar
           results={products.length}
           sort={sort}
@@ -117,12 +94,7 @@ export default function CategoryPage({ params }: Props) {
             ))}
           </div>
         ) : (
-          <p>
-            No products found{" "}
-            {normalizedSlug === "today-deals"
-              ? "in Today's Deals."
-              : "in this category."}
-          </p>
+          <p>No products found in this category.</p>
         )}
       </div>
     </div>

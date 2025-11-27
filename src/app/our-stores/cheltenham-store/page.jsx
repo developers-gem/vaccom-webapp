@@ -1,6 +1,13 @@
-"use client";
 import Link from 'next/link';
 
+export const metadata = {
+  title: "Vacuum Cleaner Shop Cheltenham | Repairs & Sales Service",
+  description:
+    "Visit our Vacuum Cleaner Shop in Cheltenham for premium vacuums, accessories and expert vacuum cleaner repairs. Fast service, top brands and the best repair solutions.",
+  alternates: {
+    canonical: "https://vaccom.com.au/our-stores/cheltenham-store",
+  },
+};
 export default function CheltenhamPage() {
   return (
     <main>
@@ -10,7 +17,7 @@ export default function CheltenhamPage() {
         style={{ backgroundImage: "url('/store-img/store-banner1.webp')" }}
       >
         <div className="text-white max-w-4xl space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold">Your Local Vacuum Cleaner Shop</h1>
+          <h1 className="text-4xl md:text-5xl font-bold">Your Local Vaccom Cleaner Shop</h1>
         </div>
       </section>
 

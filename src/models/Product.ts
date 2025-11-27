@@ -9,6 +9,8 @@ export interface IProduct extends Document {
   longDesc: string;
   brand: string;
   category: string;
+    categorySlug: string;   // ⭐ ADD THIS
+
   images: string[];
   slug: string;
   isTodayDeal?: boolean;
@@ -28,6 +30,7 @@ const ProductSchema = new mongoose.Schema<IProduct>(
 
     brand: { type: String, required: true },
     category: { type: String, required: true },
+categorySlug: { type: String, required: true },
 
     images: { type: [String], default: [] },
 

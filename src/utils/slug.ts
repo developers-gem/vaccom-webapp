@@ -3,10 +3,11 @@ export function generateSlug(name: string): string {
   return name
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, "") // remove special chars
-    .replace(/\s+/g, "-") // spaces → dashes
-    .replace(/-+/g, "-"); // collapse multiple dashes
-
-    
+    .replace(/&/g, " and ")         // ⭐ Convert '&' to 'and'
+    .replace(/[^a-z0-9\s-]/g, "")   // Remove all other special chars
+    .replace(/\s+/g, "-")           // Spaces → dashes
+    .replace(/-+/g, "-")            // Collapse multiple dashes
+    .replace(/^-|-$/g, "");         // Trim dashes
 }
+
 

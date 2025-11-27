@@ -1,6 +1,13 @@
 
 import Link from 'next/link';
-
+export const metadata = {
+  title: "Vacuum Cleaner Shop Sunbury | Repairs & Sales Service",
+  description:
+    "Vacuum Cleaner Shop in Sunbury Explore quality vacuums, accessories and reliable vacuum cleaner repairs with fast, friendly service at our Sunbury store.",
+  alternates: {
+    canonical: "https://vaccom.com.au/our-stores/sunbury-store",
+  },
+};
 export default function SunburyPage() {
   return (
     <main>

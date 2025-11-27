@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import Product from "@/models/Product";
 import { connectToDatabase } from "@/app/lib/mongodb";
 
+// FULLY WORKING SLUG DECODER
+function decodeCategorySlug(slug: string): string {
+  return decodeURIComponent(slug)     // handles %26 → &
+    .replace(/-/g, " ")               // "-" → " "
+    .replace(/\s+/g, " ")             
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());  
+}
+
 export async function GET(req: Request) {
   try {
     await connectToDatabase();
@@ -13,46 +22,32 @@ export async function GET(req: Request) {
 
     let filter: any = {};
 
+    // BRAND
     if (brand) {
       const normalizedBrand = decodeURIComponent(brand)
         .replace(/-/g, " ")
         .replace(/\s+/g, " ")
         .trim();
-      const escapedBrand = normalizedBrand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.brand = { $regex: new RegExp(`^${escapedBrand}$`, "i") };
+
+      filter.brand = { $regex: new RegExp(`^${normalizedBrand}$`, "i") };
     }
 
+    // CATEGORY (FIXED)
     if (category) {
-      const normalizedCategory = decodeURIComponent(category)
-        .replace(/-/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-      const escapedCategory = normalizedCategory.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.category = { $regex: new RegExp(`^${escapedCategory}$`, "i") };
+      const realCategory = decodeCategorySlug(category);
+      filter.category = { $regex: new RegExp(`^${realCategory}$`, "i") };
     }
 
+    // TODAY DEALS
     if (isTodayDeal === "true") {
       filter.isTodayDeal = true;
     }
 
+    // FETCH
     const products = await Product.find(filter).lean();
 
-    // 🔥 Prevents frontend crash (always return array)
-    if (!Array.isArray(products)) {
-      console.error("❌ Products API returned non-array:", products);
-      return NextResponse.json([], { status: 200 });
-    }
-
-    // Fix price fields
-    const fixedProducts = products.map((p) => ({
-      ...p,
-      price: Number(p.price || 0),
-      salePrice: Number(p.salePrice || 0),
-    }));
-
-    return NextResponse.json(fixedProducts);
+    return NextResponse.json(products);
   } catch (err: any) {
-    console.error("❌ Products API error:", err);
-    return NextResponse.json({ error: err.message || "Server error" }, { status: 500 });
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
