@@ -123,7 +123,7 @@ export default function SunburyPage() {
 
           </p>
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3157.4419705123736!2d145.05179927579842!3d-37.96423527198159!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad66b5f22a32737%3A0x5045675218ce3e0!2sCheltenham%20VIC%203192!5e0!3m2!1sen!2sau!4v1691577600000!5m2!1sen!2sau"
+            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d404723.26191080426!2d144.728733!3d-37.580961!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad6f9b84a58eecb%3A0x20ce86871800250a!2s93%20Evans%20St%2C%20Sunbury%20VIC%203429%2C%20Australia!5e0!3m2!1sen!2sus!4v1764234836664!5m2!1sen!2sus"
             width="100%"
             height="400"
             style={{ border: 0 }}
@@ -132,6 +132,7 @@ export default function SunburyPage() {
             referrerPolicy="no-referrer-when-downgrade"
             className="rounded-lg shadow-md"
           ></iframe>
+          
         </div>
       </section>
       {/* Contact Highlights Section */}
@@ -150,32 +151,32 @@ export default function SunburyPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Head Office */}
             <div className="border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition duration-300">
-              <h3 className="text-5xl font-semibold mb-5 px-5 py-2 text-red-600">Sunbury
+              <h3 className="text-3xl font-semibold mb-5 px-5 py-2 text-red-600">Sunbury
               </h3>
-              <p className="text-[20px] text-gray-800 px-3 ">
+              <p className="text-[16px] text-gray-800 px-3 ">
                 <span className="font-semibold ">Address:</span> 93 Evans St, Sunbury VIC 3429
               </p>
             </div>
 
             {/* Contact */}
             <div className="border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition duration-300">
-              <h3 className="text-5xl font-semibold mb-5 px-5 py-2 text-red-600">Contact</h3>
-              <p className="text-[20px] text-gray-800 px-3">
+              <h3 className="text-3xl font-semibold mb-5 px-5 py-2 text-red-600">Contact</h3>
+              <p className="text-[16px] text-gray-800 px-3">
                 <span className="font-semibold">Call now:</span> 0397 409 390
 
               </p>
-              <p className="text-[20px] text-gray-800 px-3">
+              <p className="text-[16px] text-gray-800 px-3">
                 <span className="font-semibold">E-mail:</span>  sunbury@vaccom.com.au
               </p>
             </div>
 
             {/* Open Hours */}
             <div className="border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition duration-300">
-              <h3 className="text-5xl font-semibold mb-5 px-5 py-2 text-red-600">Open Hours</h3>
-              <p className="text-[20px] text-gray-800 px-3">
+              <h3 className="text-3xl font-semibold mb-5 px-5 py-2 text-red-600">Open Hours</h3>
+              <p className="text-[16px] text-gray-800 px-3">
                 <span className="font-semibold">Days:</span> Monday – Sunday
               </p>
-              <p className="text-[20px] text-gray-800 px-3">
+              <p className="text-[16px] text-gray-800 px-3">
                 <span className="font-semibold">Time:</span> 9:00 AM – 5:30 PM
               </p>
             </div>

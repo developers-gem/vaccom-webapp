@@ -24,7 +24,7 @@ export default function CartPage() {
         <p className="text-gray-600">Browse products and add them to your cart.</p>
         <button
           onClick={() => router.push("/")}
-          className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow"
+          className="mt-6 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow"
         >
           Continue Shopping
         </button>

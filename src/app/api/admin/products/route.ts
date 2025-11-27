@@ -67,7 +67,7 @@ if (!fs.existsSync(uploadDir)) {
       name,
       slug,
       price,
-      salePrice,   // ✅ include in DB
+      salePrice,   
       shortDesc,
       longDesc,
       brand,

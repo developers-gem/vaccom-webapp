@@ -85,19 +85,23 @@ export default function ProductDetail() {
 
   const cartItem = cart.find((item) => item.id === productForCart.id);
 
-  const toggleWishlist = () => {
-    if (!inWishlist) {
-      addToWishlist(productForCart);
-      setNotify("Added to wishlist!");
-      setNotifyColor("green");
-    } else {
-      removeFromWishlist(product._id);
-      setNotify("Removed from wishlist!");
-      setNotifyColor("red");
-    }
-    setInWishlist((prev) => !prev);
-    setTimeout(() => setNotify(""), 2000);
-  };
+ const toggleWishlist = () => {
+  if (!inWishlist) {
+    addToWishlist(productForCart);
+    setNotify("Added to wishlist!");
+    setNotifyColor("green");
+  } else {
+    removeFromWishlist(product._id);
+    setNotify("Removed from wishlist!");
+    setNotifyColor("red");
+  }
+
+  setInWishlist((prev) => !prev);
+
+  // Auto-hide toast
+  setTimeout(() => setNotify(""), 8000);
+};
+
 
   // 👇 handle add to cart + toast
   const handleAddToCart = () => {
@@ -110,22 +114,32 @@ export default function ProductDetail() {
     <div className="p-6 max-w-6xl mx-auto relative">
       {/* Wishlist small toast */}
       <AnimatePresence>
-        {notify && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className={`fixed top-6 right-6 text-white px-4 py-2 rounded shadow-lg z-50 ${
-              notifyColor === "green" ? "bg-green-500" : "bg-red-500"
-            }`}
-          >
-            {notify}
-          </motion.div>
-        )}
+       {notify && (
+  <motion.div
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: 0.3 }}
+    className={`fixed top-56 left-1/2 text-white px-4 py-3 rounded shadow-lg z-50 
+      ${notifyColor === "red" ? "bg-red-600" : "bg-red-600"}`}
+  >
+    <div className="flex items-center gap-3">
+      {/* Text */}
+      <span>{notify}</span>
+
+      {/* See Wishlist button */}
+      <a
+        href="/wishlist"
+        className="bg-white text-black px-3 py-1 rounded text-sm font-medium hover:bg-gray-200 transition"
+      >
+        See Wishlist
+      </a>
+    </div>
+  </motion.div>
+)}
+
       </AnimatePresence>
 
-      {/* 👇 Main Toast (centered View Cart toast) */}
     {/* 👇 Animated Top Toast (fixed below header) */}
 <AnimatePresence>
   {showToast && (
@@ -271,16 +285,17 @@ export default function ProductDetail() {
               </button>
             )}
 
-            <button
-              onClick={toggleWishlist}
-              className="flex items-center justify-center px-4 py-2 border rounded hover:bg-red-50 transition"
-            >
-              <FiHeart
-                className={`w-6 h-6 ${
-                  inWishlist ? "fill-red-500 text-red-500" : "text-gray-500"
-                }`}
-              />
-            </button>
+          <button
+  onClick={toggleWishlist}
+  className="flex items-center justify-center px-4 py-2 border rounded hover:bg-red-50 transition"
+>
+  <FiHeart
+    className={`w-6 h-6 ${
+      inWishlist ? "fill-red-500 text-red-500" : "text-gray-500"
+    }`}
+  />
+</button>
+
           </div>
         </div>
       </div>

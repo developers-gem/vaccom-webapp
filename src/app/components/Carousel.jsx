@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import Image from 'next/image';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import Image from "next/image";
+
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 export default function Carousel() {
   const slides = [
@@ -15,37 +16,34 @@ export default function Carousel() {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <Swiper
         loop={true}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-        }}
-        navigation={true}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        pagination={{ clickable: true }}
+        navigation={true}   // ✅ ENABLE ARROWS
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
       >
         {slides.map((src, idx) => (
           <SwiperSlide key={idx}>
             <div className="relative w-full">
+
               <Image
                 src={src}
                 alt={`Slide ${idx + 1}`}
                 width={1920}
                 height={800}
                 priority
+                quality={100}
                 className="
                   w-full object-cover
-                  h-[250px]   /* small mobile */
-                  sm:h-[350px]  /* larger mobile */
-                  md:h-[450px]  /* tablets */
-                  lg:h-[550px]  /* laptops */
-                  xl:h-[600px]  /* desktops */
-                  2xl:h-[500px] /* very large screens (16” MacBook / 4K) */
+                  h-[180px]      /* small mobile */
+                  sm:h-[260px]   /* mobile large */
+                  md:h-[380px]   /* tablets */
+                  lg:h-[400px]   /* laptops */
+                  xl:h-[500px]   /* desktop */
+                  2xl:h-[620px]  /* MacBook / 4K */
                 "
               />
             </div>

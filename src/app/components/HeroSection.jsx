@@ -36,7 +36,7 @@ export default function HeroSection() {
           </p>
 
           <Link
-            href="/products"
+            href="/all-products"
             className="inline-block bg-[#C80000] text-white text-sm sm:text-base font-medium px-5 sm:px-6 py-2.5 sm:py-3 rounded-md hover:bg-[#b80000] transition-all"
           >
             Explore Products

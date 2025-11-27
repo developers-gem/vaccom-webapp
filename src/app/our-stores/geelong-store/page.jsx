@@ -131,7 +131,7 @@ export default function GeelongPage() {
 						, Belmont, Waurn Ponds, Corio, Highton, Lara, Grovedale
 					</p>
 					<iframe
-						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3157.4419705123736!2d145.05179927579842!3d-37.96423527198159!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad66b5f22a32737%3A0x5045675218ce3e0!2sCheltenham%20VIC%203192!5e0!3m2!1sen!2sau!4v1691577600000!5m2!1sen!2sau"
+						src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d401618.1133904479!2d144.364624!3d-38.148528!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad4141ef50cf591%3A0x74d4251c745ddc55!2s162%20Malop%20St%2C%20Geelong%20VIC%203220%2C%20Australia!5e0!3m2!1sen!2sus!4v1764234734230!5m2!1sen!2sus"
 						width="100%"
 						height="400"
 						style={{ border: 0 }}
@@ -141,6 +141,8 @@ export default function GeelongPage() {
 						className="rounded-lg shadow-md"
 					/>
 				</div>
+
+				
 			</section>
 			{/* Contact Highlights Section */}
 			<section className="w-full py-16 px-4 md:px-16 bg-blue-10">
@@ -159,33 +161,33 @@ export default function GeelongPage() {
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 						{/* Head Office */}
 						<div className="border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition duration-300">
-							<h3 className="text-5xl font-semibold mb-5 px-5 py-2 text-red-600">Geelong</h3>
-							<p className="text-[20px] text-gray-800 px-3 ">
+							<h3 className="text-3xl font-semibold mb-5 px-5 py-2 text-red-600">Geelong</h3>
+							<p className="text-[16px] text-gray-800 px-3 ">
 								<span className="font-semibold ">Address:</span> 162 Malop St, Geelong VIC 3220
 							</p>
 						</div>
 
 						{/* Contact */}
 						<div className="border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition duration-300">
-							<h3 className="text-5xl font-semibold mb-5 px-5 py-2 text-red-600">Contact</h3>
-							<p className="text-[20px] text-gray-800 px-3">
+							<h3 className="text-3xl font-semibold mb-5 px-5 py-2 text-red-600">Contact</h3>
+							<p className="text-[16px] text-gray-800 px-3">
 								<span className="font-semibold">Call now:</span> 0397 409 390
 							</p>
-							<p className="text-[20px] text-gray-800 px-3">
+							<p className="text-[16px] text-gray-800 px-3">
 								<span className="font-semibold">Phone:</span> 0342070300
 							</p>
-							<p className="text-[20px] text-gray-800 px-3">
+							<p className="text-[16px] text-gray-800 px-3">
 								<span className="font-semibold">E-mail:</span> geelong@vaccom.com.au
 							</p>
 						</div>
 
 						{/* Open Hours */}
 						<div className="border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition duration-300">
-							<h3 className="text-5xl font-semibold mb-5 px-5 py-2 text-red-600">Open Hours</h3>
-							<p className="text-[20px] text-gray-800 px-3">
+							<h3 className="text-3xl font-semibold mb-5 px-5 py-2 text-red-600">Open Hours</h3>
+							<p className="text-[16px] text-gray-800 px-3">
 								<span className="font-semibold">Days:</span> Monday – Sunday
 							</p>
-							<p className="text-[20px] text-gray-800 px-3">
+							<p className="text-[16px] text-gray-800 px-3">
 								<span className="font-semibold">Time:</span> 9:00 AM – 5:30 PM
 							</p>
 						</div>

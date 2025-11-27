@@ -24,19 +24,22 @@ interface Props {
 export default function ProductCard({ product, view = "grid" }: Props) {
   const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
+
+  // 👇 NEW: toast type (cart / wishlist)
+  const [toastType, setToastType] = useState<"cart" | "wishlist">("cart");
+
   const [currentImage, setCurrentImage] = useState(
     product.images?.[0] || "/placeholder.png"
   );
 
-  // ✅ Normalize salePrice
   const normalizedSalePrice =
     product.salePrice !== undefined && product.salePrice !== null
       ? Number(product.salePrice)
       : 0;
 
-  // ✅ Determine if product is on sale
   const hasSale = normalizedSalePrice > 0 && normalizedSalePrice < product.price;
 
   const productForCart: CartProduct = {
@@ -51,16 +54,20 @@ export default function ProductCard({ product, view = "grid" }: Props) {
   const cartItem = cart.find((item) => item.id === productForCart.id);
   const inWishlist = isInWishlist(productForCart.id);
 
+  // ⭐ Wishlist Handler
   const handleWishlist = () => {
     if (inWishlist) {
       removeFromWishlist(productForCart.id);
+      setToastType("wishlist");
       showAlert("Removed from wishlist");
     } else {
       addToWishlist(productForCart);
+      setToastType("wishlist");
       showAlert("Added to wishlist");
     }
   };
 
+  // Toast
   const showAlert = (message: string) => {
     setToastMessage(message);
     setShowToast(true);
@@ -70,54 +77,67 @@ export default function ProductCard({ product, view = "grid" }: Props) {
   return (
     <>
       {/* Toast */}
-{showToast && (
+   {showToast && (
   <div
-    className={`fixed inset-0 flex items-center justify-center z-50 transition-all duration-500 ease-in-out`}
+    className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[9999] 
+               transition-all duration-500"
     style={{
       opacity: showToast ? 1 : 0,
-      transform: showToast ? "translateY(0)" : "translateY(-20px)",
+      transform: showToast ? "translate(-50%, 0)" : "translate(-50%, 20px)",
     }}
   >
-    <div className="relative bg-red-600 text-white px-8 py-5 rounded-lg shadow-lg text-base flex flex-col sm:flex-row items-center gap-4 pointer-events-auto">
-      {/* Close (X) icon */}
+    <div className="bg-red-600 text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-4 w-[320px] relative">
+
+      {/* Close Button */}
       <button
         onClick={() => setShowToast(false)}
-        className="absolute top-2 right-3 text-white text-xl font-bold hover:text-gray-200 transition"
-        aria-label="Close"
+        className="absolute top-1 right-2 text-white text-xl font-bold"
       >
         ×
       </button>
 
-      {/* Toast message */}
-      <span className="text-center">{toastMessage}</span>
+      {/* Icon */}
+      {toastType === "wishlist" ? (
+        <FiHeart className="text-white w-7 h-7" />
+      ) : (
+        <span className="text-2xl">🛒</span>
+      )}
 
-      {/* View Cart button */}
+      {/* Text */}
+      <span className="font-medium text-sm flex-1">
+        {toastMessage}
+      </span>
+
+      {/* CTA Button */}
       <a
-        href="/cart"
-        className="bg-white text-red-600 px-4 py-2 rounded-md font-semibold hover:bg-gray-100 transition"
+        href={toastType === "wishlist" ? "/wishlist" : "/cart"}
+        className="bg-white text-red-600 px-3 py-1.5 rounded-md text-xs font-semibold"
       >
-        View Cart
+        {toastType === "wishlist" ? "See Wishlist" : "View Cart"}
       </a>
     </div>
   </div>
 )}
 
 
+
       <div
         className={`relative bg-white border rounded-2xl shadow-sm hover:shadow-xl transition transform hover:-translate-y-1 p-4
         ${view === "list" ? "flex gap-6 items-center" : ""}`}
       >
-        {/* Wishlist */}
+        {/* Wishlist Button */}
         <button
           onClick={handleWishlist}
           className="absolute top-5 right-3 p-2 rounded-full bg-white z-50 shadow hover:scale-110 transition"
         >
           <FiHeart
-            className={`w-6 h-6 ${inWishlist ? "fill-red-500 text-red-500" : "text-gray-500"}`}
+            className={`w-6 h-6 ${
+              inWishlist ? "fill-red-500 text-red-500" : "text-gray-500"
+            }`}
           />
         </button>
 
-        {/* Badges */}
+        {/* Sale / New badge */}
         <div className="absolute -top-2 -left-2 z-10 flex flex-col gap-2">
           {hasSale && (
             <span className="text-xs font-bold px-6 py-3 rounded-full shadow-md bg-red-600 text-white">
@@ -131,20 +151,22 @@ export default function ProductCard({ product, view = "grid" }: Props) {
           )}
         </div>
 
-        {/* Product Image */}
+        {/* Image */}
         <Link href={`/products/${product.slug}`} className="flex-shrink-0 relative">
           <img
             src={currentImage}
             alt={product.name}
             className={`rounded-xl object-cover transition-all duration-500 ${
-              view === "list" ? "w-40 h-40" : "w-full h-52 md:h-56 mx-auto mb-3"
+              view === "list"
+                ? "w-40 h-40"
+                : "w-full h-52 md:h-56 mx-auto mb-3"
             }`}
             onMouseEnter={() => product.images?.[1] && setCurrentImage(product.images[1])}
             onMouseLeave={() => setCurrentImage(product.images?.[0] || "/placeholder.png")}
           />
         </Link>
 
-        {/* Product Info */}
+        {/* Info */}
         <div className={view === "list" ? "flex-1" : ""}>
           <Link href={`/products/${product.slug}`}>
             <h2
@@ -162,57 +184,59 @@ export default function ProductCard({ product, view = "grid" }: Props) {
           <div className="mt-2">
             {hasSale ? (
               <>
-                <span className="text-gray-400 line-through mr-2 text-sm">${product.price}</span>
-                <span className="text-red-600 font-bold text-lg">${normalizedSalePrice}</span>
+                <span className="text-gray-400 line-through mr-2 text-sm">
+                  ${product.price}
+                </span>
+                <span className="text-red-600 font-bold text-lg">
+                  ${normalizedSalePrice}
+                </span>
               </>
             ) : (
-              <span className="text-red-600 font-bold text-lg">${product.price}</span>
+              <span className="text-red-600 font-bold text-lg">
+                ${product.price}
+              </span>
             )}
           </div>
 
-          {/* Add to Cart */}
-          {/* Add to Cart + View Product Buttons */}
-<div className="flex flex-wrap gap-3 mt-4">
-  {cartItem ? (
-    <div className="flex items-center gap-2 border rounded-full px-6 py-1 bg-gray-50">
-      <button
-        onClick={() => decreaseQuantity(cartItem.id, 1)}
-        className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
-      >
-        -
-      </button>
-      <span className="font-medium">{cartItem.quantity}</span>
-      <button
-        onClick={() => increaseQuantity(cartItem.id, 1)}
-        className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
-      >
-        +
-      </button>
-    </div>
-  ) : (
-    <button
-      onClick={() => {
-        addToCart(productForCart, 1);
-        showAlert("Item added to cart");
-      }}
-      className={`flex justify-center gap-2 bg-gradient-to-r from-red-500 to-red-500 text-white px-3 py-2 rounded-full hover:opacity-90 transition
-      ${view === "list" ? "mt-2" : ""}`}
-    >
-      Add To Cart
-    </button>
-  )}
+          {/* Cart & View Product */}
+          <div className="flex flex-wrap gap-3 mt-4">
+            {cartItem ? (
+              <div className="flex items-center gap-2 border rounded-full px-6 py-1 bg-gray-50">
+                <button
+                  onClick={() => decreaseQuantity(cartItem.id, 1)}
+                  className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
+                >
+                  -
+                </button>
+                <span className="font-medium">{cartItem.quantity}</span>
+                <button
+                  onClick={() => increaseQuantity(cartItem.id, 1)}
+                  className="bg-gray-200 px-2 py-1 rounded-full hover:bg-gray-300"
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  addToCart(productForCart, 1);
+                  setToastType("cart");
+                  showAlert("Item added to cart");
+                }}
+                className={`flex justify-center gap-2 bg-gradient-to-r from-red-500 to-red-500 text-white px-3 py-2 rounded-full hover:opacity-90 transition
+                ${view === "list" ? "mt-2" : ""}`}
+              >
+                Add To Cart
+              </button>
+            )}
 
-  {/* View Product Button */}
-  <Link
-    href={`/products/${product.slug}`}
-    className="flex justify-center items-center gap-2 border border-gray-300 text-gray-700 px-3 py-2 rounded-full hover:bg-gray-100 transition"
-  >
-    View Product
-  </Link>
-</div>
-
-
-          
+            <Link
+              href={`/products/${product.slug}`}
+              className="flex justify-center items-center gap-2 border border-gray-300 text-gray-700 px-3 py-2 rounded-full hover:bg-gray-100 transition"
+            >
+              View Product
+            </Link>
+          </div>
         </div>
       </div>
     </>
