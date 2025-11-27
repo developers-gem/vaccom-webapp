@@ -10,7 +10,7 @@ import "swiper/css/navigation";
 
 export default function Carousel() {
   const slides = [
-    "/banner-img/black friday web banner .webp",
+    "/banner-img/axa copy.webp",
     "/banner-img/vaccomweb1.webp",
     "/banner-img/vaccomweb2.webp",
   ];
@@ -41,9 +41,9 @@ export default function Carousel() {
                   h-[180px]      /* small mobile */
                   sm:h-[260px]   /* mobile large */
                   md:h-[380px]   /* tablets */
-                  lg:h-[400px]   /* laptops */
-                  xl:h-[500px]   /* desktop */
-                  2xl:h-[620px]  /* MacBook / 4K */
+                  lg:h-[300px]   /* laptops */
+                  xl:h-[400px]   /* desktop */
+                  2xl:h-[500px]  /* MacBook / 4K */
                 "
               />
             </div>
