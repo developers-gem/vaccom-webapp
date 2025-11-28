@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Papa from "papaparse";
+
 interface Product {
   _id: string;
   slug: string;
