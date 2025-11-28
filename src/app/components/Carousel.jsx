@@ -41,9 +41,9 @@ export default function Carousel() {
                   h-[180px]      /* small mobile */
                   sm:h-[260px]   /* mobile large */
                   md:h-[380px]   /* tablets */
-                  lg:h-[300px]   /* laptops */
+                  lg:h-[400px]   /* laptops */
                   xl:h-[400px]   /* desktop */
-                  2xl:h-[500px]  /* MacBook / 4K */
+                  2xl:h-[600px]  /* MacBook / 4K */
                 "
               />
             </div>

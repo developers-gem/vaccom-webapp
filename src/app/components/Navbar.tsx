@@ -45,8 +45,8 @@ const productLinks = [
   { name: "Steamers", img: "/category-image/steamer.png", slug: "steamers" },
   { name: "Commercial", img: "/category-image/commercial.webp", slug: "commercial" },
   { name: "Cleaning Chemicals", img: "/category-image/Cleaning-Chemicals.webp", slug: "cleaning chemicals" },
-  { name: "Accessories & Parts", img: "/category-image/Accessories.webp", slug: "accessories & parts" },
-  { name: "Vacuum Bags & Filters", img: "/category-image/Vacuum-Bags.webp", slug: "vacuum bags & filters" },
+  { name: "Accessories & Parts", img: "/category-image/Accessories.webp", slug: "accessories and parts" },
+  { name: "Vacuum Bags & Filters", img: "/category-image/Vacuum-Bags.webp", slug: "vacuum bags and filters" },
 ];
 
 const storeLinks = ["Cheltenham", "Geelong", "Sunbury"];

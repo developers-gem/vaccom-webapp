@@ -52,13 +52,13 @@ export const categorySEO: Record<
       "Shop commercial-grade cleaning chemicals for carpets, tiles and hard floors. Safe, powerful and effective formulas. Delivered Australia-wide.",
     canonical: "https://vaccom.com.au/product-category/cleaning-chemicals",
   },
-  "accessories-%26-parts": {
+  "accessories-and-parts": {
     title: "Vacuum Accessories & Replacement Parts | Vaccom AU",
     description:
       "Buy hoses, motors, wands, brush heads and spare parts for all vacuum brands. Affordable accessories with fast, reliable Australia-wide delivery.",
     canonical: "https://vaccom.com.au/product-category/accessories-%26-parts",
   },
-  "vacuum-bags-%26-filters": {
+  "vacuum-bags-and-filters": {
     title: "Vacuum Bags & HEPA Filters for All Brands | Vaccom AU",
     description:
       "Shop vacuum bags and HEPA filters for Dyson, Miele, Electrolux and more. High-quality replacements with fast shipping across Australia.",

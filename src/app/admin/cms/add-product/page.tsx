@@ -25,7 +25,7 @@ export default function AddProductPage() {
   const categories = [
     "Corded Vacuums","Cordless Vacuums","Robots","Carpet Washers",
     "Hard Floor Cleaners","Steamers","Commercial","Cleaning Chemicals",
-    "Accessories & Parts","Vacuum Bags & Filters"
+    "Accessories and Parts","Vacuum Bags and Filters"
   ];
 
   const [product, setProduct] = useState<ProductForm>({
