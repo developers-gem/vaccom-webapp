@@ -20,11 +20,13 @@ export default function ProductToolbar({
   return (
     <div className="w-full bg-red-50 backdrop-blur-md border-b border-gray-200 mb-6 shadow-sm">
       <div className="flex flex-col md:flex-row items-center justify-between py-5 px-4 md:px-8 max-w-7xl mx-auto">
+        
         {/* Results count */}
         <p className="text-gray-700 font-medium">Showing results: {results}</p>
 
         {/* Right side controls */}
         <div className="flex items-center gap-4 mt-4 md:mt-0">
+
           {/* Sort dropdown */}
           <select
             value={sort}
@@ -33,8 +35,8 @@ export default function ProductToolbar({
             aria-label="Sort products"
           >
             <option value="">Sort by</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
             <option value="newest">Newest</option>
           </select>
 
@@ -49,6 +51,7 @@ export default function ProductToolbar({
             >
               <Grid size={22} />
             </button>
+
             <button
               onClick={() => setView("list")}
               className={`p-2 rounded-lg transition-colors duration-200 ${
@@ -59,6 +62,7 @@ export default function ProductToolbar({
               <List size={22} />
             </button>
           </div>
+
         </div>
       </div>
     </div>
