@@ -1,5 +1,6 @@
 "use client";
 import { useState, ChangeEvent, FormEvent } from "react";
+import TipTapEditor from "@/app/components/TipTapEditor"
 
 interface ProductForm {
   name: string;
@@ -108,6 +109,29 @@ export default function AddProductPage() {
       alert("Something went wrong");
     }
   };
+const handleDescKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const { name, value, selectionStart, selectionEnd } = e.currentTarget;
+
+    const insert = "\n• ";
+    const newValue =
+      value.substring(0, selectionStart) +
+      insert +
+      value.substring(selectionEnd);
+
+    setProduct(prev => ({
+      ...prev,
+      [name]: newValue,
+    }));
+
+    // Move cursor after the bullet
+    setTimeout(() => {
+      e.currentTarget.selectionStart = e.currentTarget.selectionEnd =
+        selectionStart + insert.length;
+    }, 0);
+  }
+};
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded">
@@ -152,21 +176,16 @@ export default function AddProductPage() {
           className="w-full border p-2 rounded"
         />
 
-        <input
-          name="shortDesc"
-          value={product.shortDesc || ""}
-          onChange={handleChange}
-          placeholder="Short Description"
-          className="w-full border p-2 rounded"
-        />
+      <TipTapEditor
+  value={product.shortDesc || ""}
+  onChange={(html) => setProduct(prev => ({ ...prev, shortDesc: html }))}
+/>
 
-        <textarea
-          name="longDesc"
-          value={product.longDesc || ""}
-          onChange={handleChange}
-          placeholder="Long Description "
-          className="w-full border p-2 rounded"
-        />
+<TipTapEditor
+  value={product.longDesc || ""}
+  onChange={(html) => setProduct(prev => ({ ...prev, longDesc: html }))}
+/>
+
 
         <select
           name="brand"
@@ -219,7 +238,6 @@ export default function AddProductPage() {
             ))}
           </div>
         )}
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

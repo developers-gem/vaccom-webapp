@@ -10,7 +10,7 @@ import "swiper/css/navigation";
 
 export default function Carousel() {
   const slides = [
-    "/banner-img/axa copy.webp",
+    "/banner-img/MEERY CHRISTMAS WEB IMAGE  copy.webp",
     "/banner-img/vaccomweb1.webp",
     "/banner-img/vaccomweb2.webp",
   ];
