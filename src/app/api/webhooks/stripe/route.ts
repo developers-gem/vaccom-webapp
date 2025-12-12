@@ -1,7 +1,7 @@
 // /app/api/webhooks/stripe/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {

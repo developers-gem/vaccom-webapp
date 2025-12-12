@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/models/User";
 
 // ✅ Auth options

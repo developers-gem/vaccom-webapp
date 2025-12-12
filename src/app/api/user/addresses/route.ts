@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Address from "@/models/Address";
 
 // ✅ Helper to verify token (async)

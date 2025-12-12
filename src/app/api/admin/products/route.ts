@@ -1,7 +1,7 @@
 // src\app\api\admin\products\route.ts
 
 import { NextResponse } from "next/server";       // ✅ Next.js Response helper
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Product from "@/models/Product";           // ✅ Your Product model
 import { generateSlug } from "@/utils/slug";     // ✅ Utility to generate slug
 

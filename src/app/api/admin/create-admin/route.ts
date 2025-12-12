@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdminToken } from "@/utils/jwt";
 import bcrypt from "bcrypt";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Admin from "@/models/Admin";
 
 // Helper to get logged-in admin from cookie/session

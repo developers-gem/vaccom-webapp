@@ -1,6 +1,6 @@
 // /app/api/auth/reset-password/route.ts
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcrypt";
 import crypto from "crypto";

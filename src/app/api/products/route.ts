@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Product from "@/models/Product";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 
 // FULLY WORKING SLUG DECODER
 function decodeCategorySlug(slug: string): string {

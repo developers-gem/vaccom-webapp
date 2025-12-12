@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Admin from "@/models/Admin";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is missing in environment variables");

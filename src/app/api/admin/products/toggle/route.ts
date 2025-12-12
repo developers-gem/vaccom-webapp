@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Product from "@/models/Product";
 
 // ✅ PUT /api/admin/products/[slug]/toggle

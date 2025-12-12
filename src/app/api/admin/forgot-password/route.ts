@@ -3,7 +3,7 @@ import Admin from "@/models/Admin";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 
 // Helper: send email
 async function sendResetEmail(email: string, token: string) {

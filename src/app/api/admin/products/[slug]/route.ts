@@ -4,7 +4,7 @@ export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { generateSlug } from "@/utils/slug";
 import fs from "fs";

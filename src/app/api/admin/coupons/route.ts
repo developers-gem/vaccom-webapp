@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 import Coupon, { ICoupon } from "@/models/Coupon";
 
 // 🔐 Middleware check (pseudo, replace with real auth later)

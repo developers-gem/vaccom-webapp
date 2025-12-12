@@ -1,7 +1,7 @@
 // /app/api/admin/users/route.ts
 import { NextResponse } from "next/server";
 import User from "@/models/User"; // your user model
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET() {
   await connectToDatabase();

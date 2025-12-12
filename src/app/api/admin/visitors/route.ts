@@ -1,7 +1,7 @@
 // /app/api/admin/visitors/route.ts
 import { NextResponse } from "next/server";
 import Order from "@/models/Order";
-import { connectToDatabase } from "@/app/lib/mongodb";
+import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET() {
   try {
