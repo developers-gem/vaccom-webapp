@@ -35,7 +35,6 @@ export default function Carousel() {
                 width={1920}
                 height={800}
                 priority
-                quality={100}
                 className="
                   w-full object-cover
                   h-[180px]      /* small mobile */
