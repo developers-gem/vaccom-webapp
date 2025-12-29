@@ -1,88 +1,147 @@
-'use client';
-import React from 'react';
-import { FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
+"use client";
+import React, { useState } from "react";
+import { FiPhone } from "react-icons/fi";
 
 export default function ContactForm() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error);
+
+      setSuccess("✅ Thank you! We’ll contact you shortly.");
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        location: "",
+        message: "",
+      });
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main>
- <section
-      className="w-full bg-cover bg-center relative"
-      style={{ backgroundImage: "url('/banner-img/contact-bg.png')" }}
-    >
-      {/* Red overlay */}
-      <div className="absolute inset-0 bg-red-600 opacity-70"></div>
+      <section
+        className="w-full bg-cover bg-center relative"
+        style={{ backgroundImage: "url('/banner-img/contact-bg.png')" }}
+      >
+        <div className="absolute inset-0 bg-red-600 opacity-70"></div>
 
-      <div className="relative max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        {/* Left Side */}
-        <div className="text-white space-y-6">
-          <h2 className="text-4xl md:text-5xl font-bold">Contact Us Today!</h2>
-          <p className="text-lg md:text-xl">
-            Send us some information and we will follow up to show how we can help.
-          </p>
-          <h3 className="text-2xl font-semibold">Ready To Get Started</h3>
+        <div className="relative max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* Left */}
+          <div className="text-white space-y-6">
+            <h2 className="text-4xl md:text-5xl font-bold">
+              Contact Us Today!
+            </h2>
+            <p className="text-lg md:text-xl">
+              Send us some information and we will follow up.
+            </p>
 
-          <div className="bg-white text-red-600 flex items-center gap-2 py-3 px-5 rounded-md w-fit font-bold shadow-md">
-                       <FiPhone />
- 0397-409-390
+            <div className="bg-white text-red-600 flex items-center gap-2 py-3 px-5 rounded-md w-fit font-bold shadow-md">
+              <FiPhone /> 0397-409-390
+            </div>
           </div>
-        </div>
 
-        {/* Right Side Form */}
-        <div className="bg-red-700 rounded-lg p-8 space-y-4 shadow-lg">
-          <div>
-            <label className="text-white font-semibold">Name *</label>
+          {/* Right Form */}
+          <form
+            onSubmit={handleSubmit}
+            className="bg-red-700 rounded-lg p-8 space-y-4 shadow-lg"
+          >
             <input
-              type="text" 
+              name="name"
+              value={form.name}
+              onChange={handleChange}
               placeholder="Full Name*"
-              className="w-full mt-1 p-3 rounded text-sm focus:outline-none bg-white"
+              className="w-full p-3 rounded"
             />
-          </div>
-          <div>
-            <label className="text-white font-semibold">Email *</label>
+
             <input
+              name="email"
               type="email"
+              value={form.email}
+              onChange={handleChange}
               placeholder="Email*"
-              className="w-full mt-1 p-3 rounded text-sm focus:outline-none bg-white"
+              className="w-full p-3 rounded"
             />
-          </div>
-          <div>
-            <label className="text-white font-semibold">Numbers *</label>
+
             <input
-              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
               placeholder="Phone*"
-              className="w-full mt-1 p-3 rounded text-sm focus:outline-none bg-white"
+              className="w-full p-3 rounded"
             />
-          </div>
-          <div>
-            <label className="text-white font-semibold">Select Store Location *</label>
-            <select className="w-full mt-1 p-3 rounded text-sm focus:outline-none bg-white">
-              <option>Select your store*</option>
+
+            <select
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              className="w-full p-3 rounded"
+            >
+              <option value="">Select your store*</option>
               <option>Melbourne</option>
               <option>Sydney</option>
               <option>Brisbane</option>
             </select>
-          </div>
-          <div>
-            <label className="text-white font-semibold">Message *</label>
-            <textarea
-              rows={4}
-              placeholder="Message*"
-              className="w-full mt-1 p-3 rounded text-sm focus:outline-none bg-white"
-            ></textarea>
-          </div>
-          {/* Submit Button */}
- <div className="flex justify-center">
-  <button
-    type="submit"
-    className="w-1/5 mt-4 bg-black hover:bg-white hover:text-black text-white font-bold py-3 px-6 rounded transition-colors duration-300"
-  >
-    Submit
-  </button>
-</div>
 
+            <textarea
+              name="message"
+              rows={4}
+              value={form.message}
+              onChange={handleChange}
+              placeholder="Message*"
+              className="w-full p-3 rounded"
+            />
+
+            {success && <p className="text-green-200">{success}</p>}
+            {error && <p className="text-yellow-200">{error}</p>}
+
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-black text-white px-8 py-3 rounded hover:bg-white hover:text-black transition"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
-    </section>
+      </section>
     </main>
   );
 }

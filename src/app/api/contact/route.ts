@@ -4,42 +4,46 @@ import nodemailer from "nodemailer";
 interface ContactFormData {
   name: string;
   email: string;
-  number: string;
+  phone: string;   // ✅ FIXED
   location: string;
   message: string;
 }
 
 export async function POST(req: Request) {
   try {
-    const { name, email, number, location, message }: ContactFormData = await req.json();
+    const { name, email, phone, location, message }: ContactFormData =
+      await req.json();
 
-    if (!name || !email || !number || !location || !message) {
+    // Validation
+    if (!name || !email || !phone || !location || !message) {
       return NextResponse.json(
         { success: false, error: "All fields are required." },
         { status: 400 }
       );
     }
 
-    // Configure your mail transport
+    // ✅ Recommended transporter config
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
       auth: {
-        user: process.env.EMAIL_USER, // your Gmail
-        pass: process.env.EMAIL_PASS, // your Gmail app password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Send email
     await transporter.sendMail({
-      from: `"Website Contact" <${process.env.EMAIL_USER}>`,
-      to: "your_email@example.com", // your receiving email
-      subject: "New Contact Form Submission",
-      text: `
-        Name: ${name}
-        Email: ${email}
-        Phone: ${number}
-        Location: ${location}
-        Message: ${message}
+      from: `"Vaccom Website" <${process.env.EMAIL_USER}>`,
+      to: process.env.RECEIVE_EMAIL, // 👈 safer
+      subject: "New Contact Form Submission - Vaccom",
+      html: `
+        <h3>New Contact Enquiry</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        <p><strong>Message:</strong><br/>${message}</p>
       `,
     });
 
