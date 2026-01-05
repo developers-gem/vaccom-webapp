@@ -49,7 +49,7 @@ export default function AdminOrderDetailsPage() {
             })),
             amount: Number(data.order.amount) || 0,
             status: data.order.status || "Pending",
-            currency: data.order.currency || "USD",
+            currency: data.order.currency || "AUD",
           };
 
           setOrder(normalizedOrder);
@@ -70,11 +70,17 @@ export default function AdminOrderDetailsPage() {
   }
 
   // ✅ Currency formatter
-  const formatCurrency = (amount: number, currency: string) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency.toUpperCase(),
-    }).format(amount);
+  const formatCurrency = (amount: number, currency: string) => {
+  const normalized = (currency || "AUD").toUpperCase();
+
+  const locale = normalized === "AUD" ? "en-AU" : "en-US";
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: normalized,
+  }).format(amount);
+};
+
 
   // ✅ Status badge
   const getStatusBadge = (status: string) => {

@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 // ✅ Currency formatter
+// ✅ Currency formatter (AUD)
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-AU", {
     style: "currency",
-    currency: "USD",
+    currency: "AUD",
   }).format(amount);
 };
+
 
 export default function CartPage() {
   const router = useRouter();

@@ -6,6 +6,7 @@ import { FiHeart } from "react-icons/fi";
 import { useCart, Product as CartProduct } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { motion, AnimatePresence } from "framer-motion";
+import RelatedProductsSlider from "@/app/components/RelatedProductsSlider";
 
 interface Product {
   _id: string;
@@ -23,7 +24,8 @@ interface Product {
 }
 
 export default function ProductDetail() {
-  const { slug } = useParams<{ slug?: string }>();
+const params = useParams();
+const slug = params?.slug as string;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -39,6 +41,27 @@ export default function ProductDetail() {
 
   const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+useEffect(() => {
+  if (!product) return;
+
+  const fetchRelated = async () => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+      const res = await fetch(
+        `${baseUrl}/api/products?limit=8&exclude=${product._id}`
+      );
+      if (!res.ok) return;
+
+      const data = await res.json();
+      setRelatedProducts(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchRelated();
+}, [product]);
 
   // Fetch product
   useEffect(() => {
@@ -98,9 +121,11 @@ export default function ProductDetail() {
 
   setInWishlist((prev) => !prev);
 
-  // Auto-hide toast
-  setTimeout(() => setNotify(""), 8000);
+  setTimeout(() => {
+    setNotify("");
+  }, 3000);
 };
+
 
 
   // 👇 handle add to cart + toast
@@ -231,10 +256,10 @@ export default function ProductDetail() {
             {Array.from({ length: 5 }, (_, i) => (
               <FaStar
                 key={i}
-                className={i < (product.rating || 0) ? "text-yellow-400" : "text-gray-300"}
+                className={i < (product.rating || 4) ? "text-yellow-400" : "text-gray-300"}
               />
             ))}
-            <span className="text-gray-600 ml-2">{product.sold || 0} sold</span>
+            {/* <span className="text-gray-600 ml-2">{product.sold || 0} sold</span> */}
           </div>
 
           {/* Price */}
@@ -307,6 +332,8 @@ export default function ProductDetail() {
           <p className="text-gray-700 leading-relaxed">{product.longDesc}</p>
         </div>
       )}
+{/* RELATED PRODUCTS */}
+<RelatedProductsSlider products={relatedProducts} />
 
       {/* Modal for images */}
       <AnimatePresence>
@@ -337,6 +364,8 @@ export default function ProductDetail() {
           </motion.div>
         )}
       </AnimatePresence>
+
     </div>
+    
   );
 }

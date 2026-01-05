@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+type OrderItem = {
+  name: string;
+  qty: number;
+  price: number;
+};
+
 export async function POST(req: Request) {
   try {
     const { orderId, email, items, amount } = await req.json();
@@ -12,16 +18,21 @@ export async function POST(req: Request) {
       amount,
     });
 
-    // Validate required fields
-    if (!orderId || !email || !items || !amount) {
-      console.warn("⚠️ Missing required fields:", { orderId, email, items, amount });
+    // ✅ Validate input
+    if (
+      !orderId ||
+      !email ||
+      !Array.isArray(items) ||
+      items.length === 0 ||
+      typeof amount !== "number"
+    ) {
       return NextResponse.json(
-        { success: false, message: "Invalid request - missing required fields" },
+        { success: false, message: "Invalid request data" },
         { status: 400 }
       );
     }
 
-    // Create transporter using Gmail App Password
+    // ✅ Mail transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -30,42 +41,66 @@ export async function POST(req: Request) {
       },
     });
 
-    // Build HTML for items
-    const itemsHtml = items.length
-      ? items
-          .map(
-            (item: any) =>
-              `<li>${item.name} × ${item.qty} — ₹${(item.price * item.qty).toLocaleString("en-IN")}</li>`
-          )
-          .join("")
-      : "<li>No items</li>";
+    // ✅ Build items HTML
+    const itemsHtml = items
+      .map(
+        (item: OrderItem) =>
+          `<li>${item.name} × ${item.qty} — $${(
+            item.price * item.qty
+          ).toFixed(2)}</li>`
+      )
+      .join("");
 
-    const mailOptions = {
+    /* ===============================
+       1️⃣ CUSTOMER CONFIRMATION EMAIL
+    ================================ */
+    await transporter.sendMail({
       from: `"Vaccom Support" <${process.env.SMTP_USER}>`,
-      to: email,
+      to: email, // ✅ CUSTOMER ONLY
       subject: `Order Confirmation - ${orderId}`,
       html: `
-        <p>Hi there,</p>
+        <p>Hi,</p>
+
         <p>Thank you for your order! Your payment was successful.</p>
+
         <p><strong>Order ID:</strong> ${orderId}</p>
+
         <p><strong>Items:</strong></p>
         <ul>${itemsHtml}</ul>
-        <p><strong>Total:</strong> ₹${amount.toLocaleString("en-IN")}</p>
-        <p>We will notify you when your order is shipped.</p>
-        <p>Thanks for shopping with us!</p>
+
+        <p><strong>Total:</strong> $${amount.toFixed(2)}</p>
+
+        <p>We’ll notify you when your order is shipped.</p>
+
+        <p>Thanks for shopping with <strong>Vaccom</strong>!</p>
       `,
-    };
+    });
 
-    console.log("📤 Sending email to:", email);
+    /* ===============================
+       2️⃣ ADMIN NOTIFICATION EMAIL
+    ================================ */
+    await transporter.sendMail({
+      from: `"Vaccom Website" <${process.env.SMTP_USER}>`,
+      to: process.env.RECEIVE_EMAIL, // ✅ ADMIN ONLY
+      subject: `🛒 New Order Received - ${orderId}`,
+      html: `
+        <h3>New Order Received</h3>
 
-    const info = await transporter.sendMail(mailOptions);
+        <p><strong>Order ID:</strong> ${orderId}</p>
+        <p><strong>Customer Email:</strong> ${email}</p>
 
-    console.log("✅ Confirmation email sent:", info.messageId);
+        <p><strong>Items:</strong></p>
+        <ul>${itemsHtml}</ul>
+
+        <p><strong>Total Amount:</strong> $${amount.toFixed(2)}</p>
+      `,
+    });
+
+    console.log("✅ Customer & admin emails sent successfully");
 
     return NextResponse.json({
       success: true,
-      message: "Confirmation email sent",
-      messageId: info.messageId,
+      message: "Order confirmation emails sent",
     });
   } catch (err: any) {
     console.error("❌ Error sending confirmation email:", err);
@@ -74,8 +109,7 @@ export async function POST(req: Request) {
       {
         success: false,
         message: "Failed to send email",
-        error: err.message || err.toString(),
-        stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+        error: err.message,
       },
       { status: 500 }
     );

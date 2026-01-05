@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 interface ContactFormData {
   name: string;
   email: string;
-  phone: string;   // ✅ FIXED
+  phone: string;
   location: string;
   message: string;
 }
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const { name, email, phone, location, message }: ContactFormData =
       await req.json();
 
-    // Validation
+    // ✅ Validation
     if (!name || !email || !phone || !location || !message) {
       return NextResponse.json(
         { success: false, error: "All fields are required." },
@@ -22,20 +22,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Recommended transporter config
+    // ✅ CORRECT SMTP CONFIG (matches your env)
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
+      service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
     await transporter.sendMail({
-      from: `"Vaccom Website" <${process.env.EMAIL_USER}>`,
-      to: process.env.RECEIVE_EMAIL, // 👈 safer
+      from: `"Vaccom Website" <${process.env.SMTP_USER}>`,
+      to: process.env.RECEIVE_EMAIL, // support@vaccom.com.au
       subject: "New Contact Form Submission - Vaccom",
       html: `
         <h3>New Contact Enquiry</h3>

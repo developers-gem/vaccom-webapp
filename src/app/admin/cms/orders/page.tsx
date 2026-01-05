@@ -13,9 +13,19 @@ interface Order {
   orderId?: string;
   user: User;
   amount: number;
+    currency?: string;
+
   status: string;
   createdAt: string;
 }
+const formatMoney = (amount: number, currency = "aud") => {
+  const locale = currency.toLowerCase() === "aud" ? "en-AU" : "en-US";
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(amount);
+};
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -160,10 +170,8 @@ export default function AdminOrdersPage() {
                     <span className="text-gray-400 text-sm">({order.user?._id})</span>
                   </td>
                   <td className="px-6 py-4 font-semibold text-gray-700">
-                    {new Intl.NumberFormat("en-IN", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(order.amount)}
+  {formatMoney(order.amount, order.currency || "aud")}
+
                   </td>
                   <td className="px-6 py-4">
                     <span

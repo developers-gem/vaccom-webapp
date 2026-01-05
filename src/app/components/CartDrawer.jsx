@@ -4,9 +4,9 @@ import { FiX } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 const formatCurrency = (amount) => {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-AU", {
     style: "currency",
-    currency: "USD",
+    currency: "AUD",
   }).format(amount);
 };
 

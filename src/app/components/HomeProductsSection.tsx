@@ -14,7 +14,7 @@ const categories = [
   { slug: "steamers", name: "Steamers" },
   { slug: "commercial", name: "Commercial" },
   { slug: "cleaning-chemicals", name: "Cleaning Chemicals" },
-  { slug: "accessories-parts", name: "Accessories & Parts" },
+  { slug: "accessories and parts", name: "Accessories & Parts" },
 ];
 
 export default function HomeProductsSection() {

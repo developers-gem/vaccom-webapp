@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       userEmail,
       products: normalizedItems,
       amount: body.amount,
-      currency: body.currency || "usd",
+currency: "aud",
       paymentId: body.paymentId || null,
       status: "failed",
       shipping: body.shipping || 0,
@@ -51,12 +51,14 @@ export async function POST(req: Request) {
 
     // 2️⃣ Create failed transaction
     await Transaction.create({
-      user: decoded.id,
-      amount: body.amount,
-      status: "failed",
-      paymentMethod: "stripe",
-      stripePaymentIntentId: body.paymentId || null,
-    });
+  user: decoded.id,
+  amount: body.amount,
+  currency: "aud",
+  status: "failed",
+  paymentMethod: "stripe",
+  stripePaymentIntentId: body.paymentId || null,
+});
+
 
     // 3️⃣ Send failed order email
     try {

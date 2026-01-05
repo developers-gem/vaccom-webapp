@@ -170,7 +170,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between p-4 border-b">
           {!collapsed && (
             <h2 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
-              Vacoom
+              Vaccom
             </h2>
           )}
           <button

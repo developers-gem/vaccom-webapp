@@ -1,11 +1,40 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube, FaEnvelope,  } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaPinterest, FaYoutube, FaEnvelope,  } from "react-icons/fa";
 import {  FiPhone } from 'react-icons/fi';
 
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+const [loading, setLoading] = useState(false);
+const [success, setSuccess] = useState(false);
+
+const handleNewsletterSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setSuccess(false);
+
+  try {
+    const res = await fetch("/api/newsletter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setSuccess(true);
+      setEmail("");
+    }
+  } catch (error) {
+    alert("Failed to subscribe. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <footer className="bg-black text-white pt-16 pb-8 text-sm">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -32,18 +61,16 @@ export default function Footer() {
   0397 409 390
 </div>
            <div className="flex space-x-4 text-xl mt-4">
-            <Link href="#" className="hover:text-red-500 transition">
+            <Link href="https://www.facebook.com/profile.php?id=61583798215993" target="blank" className="hover:text-red-500 transition">
               <FaFacebookF />
             </Link>
-            <Link href="#" className="hover:text-red-500 transition">
+            <Link href="https://www.instagram.com/vaccom.com.au/" target="blank" className="hover:text-red-500 transition">
               <FaInstagram />
             </Link>
-             <Link href="#" className="hover:text-red-500 transition">
-              <FaYoutube />
+             <Link href="https://au.pinterest.com/vaccomr/" target="blank" className="hover:text-red-500 transition">
+              <FaPinterest />
             </Link>
-            <Link href="#" className="hover:text-red-500 transition">
-              <FaTwitter />
-            </Link>
+            
           </div>
         </div>
 
@@ -108,18 +135,107 @@ Contact Us</Link>
         </div>
 
         {/* Contact & Social */}
-        <div>
-          <h2 className="text-2xl font-semibold mb-4">Sign Up for Our Newsletter</h2>
-          <p className="text-gray-300 text-[15px] mb-2">Leave your email to get all hot deals & news</p>
-          <p className="text-gray-300 text-[15px] mb-4">which benefit you most!</p>
-         
-        </div>
+       <div>
+  <h2 className="text-2xl font-semibold mb-4">
+    Sign Up for Our Newsletter
+  </h2>
+
+  <p className="text-gray-300 text-[15px] mb-2">
+    Leave your email to get all hot deals & news
+  </p>
+  <p className="text-gray-300 text-[15px] mb-5">
+    which benefit you most!
+  </p>
+
+  {/* Newsletter Input */}
+<form onSubmit={handleNewsletterSubmit} className="relative max-w-md">
+  {/* Input */}
+  <input
+  type="email"
+  placeholder="Your email address..."
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+  className="
+    w-full h-12 rounded-full
+    bg-[#FFF8ED]
+    border border-red-600
+    pl-5 pr-14
+    text-sm text-gray-800
+    placeholder-gray-500
+    outline-none
+    focus:ring-2 focus:ring-red-500
+  "
+/>
+
+
+  {/* Send Button (Always visible) */}
+ <button
+  type="submit"
+  disabled={loading}
+  className="
+    absolute top-0 right-0
+    h-12 w-12 rounded-full
+    bg-red-600
+    flex items-center justify-center
+    hover:bg-red-700
+    transition
+    disabled:opacity-60
+  "
+>
+   {loading ? "…" : (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="white"
+    className="w-5 h-5"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L15 22L11 13L2 9L22 2Z" />
+  </svg>
+)}
+
+    
+  </button>
+  
+</form>
+
+{success && (
+  <p className="text-green-500 text-sm mt-3">
+    Thanks for subscribing 🎉
+  </p>
+)}
+
+</div>
+
       </div>
 
       {/* Footer Bottom */}
-      <div className="mt-12 border-t border-gray-700 pt-6 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} Vaccom. All Rights Reserved.
-      </div>
+         {/* Footer Bottom */}
+<div className="border-t border-white/10 mt-12 pt-6">
+  <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-2 text-center">
+    <span>© {new Date().getFullYear()} All rights reserved.</span>
+
+    <span className="flex items-center gap-2">
+      Developed by
+      <a
+        href="https://gemwebservices.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2 font-semibold text-white hover:text-red-500 transition"
+      >
+        <img
+          src="/gem-logo.webp"
+          alt="Gem Web Services"
+          className="h-5 w-auto"
+        />
+      </a>
+    </span>
+  </div>
+</div>
+
     </footer>
   );
 }

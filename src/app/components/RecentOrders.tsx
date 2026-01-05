@@ -17,6 +17,13 @@ interface Order {
   status: string;
   createdAt: string;
 }
+// ✅ Currency formatter (AUD)
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency: "AUD",
+  }).format(amount);
+};
 
 export default function RecentOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -85,10 +92,8 @@ export default function RecentOrders() {
                     </td>
                     <td className="px-4 py-2">{order.user?.name || "Unknown"}</td>
                     <td className="px-4 py-2 font-medium text-gray-700">
-                      {new Intl.NumberFormat("en-IN", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(order.amount)}
+                     {formatCurrency(order.amount)}
+
                     </td>
                     <td className="px-4 py-2">
                       <span

@@ -28,6 +28,13 @@ interface OrdersApiResponse {
   orders?: any[];
   error?: string;
 }
+// ✅ Currency formatter (AUD)
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat("en-AU", {
+    style: "currency",
+    currency: "AUD",
+  }).format(amount);
+};
 
 const getUserToken = () =>
   typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -102,7 +109,7 @@ export default function OrdersPage() {
           hoverImage: p.hoverImage || p.image || "/placeholder.png",
         })),
         amount: Number(o.amount) || 0,
-        currency: "USD",
+currency: o.currency || "AUD",
         createdAt: o.createdAt,
         status: o.status || "Pending",
       }));
@@ -339,17 +346,13 @@ export default function OrdersPage() {
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-600">
                     Qty: {item.qty} ×{" "}
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(item.price)}
+{formatCurrency(item.price)}
+
                   </p>
                 </div>
                 <p className="font-semibold">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(item.price * item.qty)}
+                  {formatCurrency(item.price * item.qty)}
+
                 </p>
               </div>
             ))}
@@ -358,10 +361,8 @@ export default function OrdersPage() {
             <div className="border-t pt-3 flex justify-between items-center mt-2">
               <span className="font-medium">Total Amount:</span>
               <span className="font-bold text-lg">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(order.amount)}
+                {formatCurrency(order.amount)}
+
               </span>
             </div>
           </div>

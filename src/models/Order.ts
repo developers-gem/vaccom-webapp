@@ -20,7 +20,7 @@ const OrderSchema = new mongoose.Schema({
     },
   ],
   amount: { type: Number, required: true },
-  currency: { type: String, default: "usd", lowercase: true },
+currency: { type: String, default: "aud", lowercase: true },
 
   // ✅ New fields
   paymentId: { type: String, index: true }, // Stripe PaymentIntent ID

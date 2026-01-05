@@ -93,16 +93,17 @@ let transactionStatus: "completed" | "failed" | "pending" = "pending"; // <-- de
   userEmail,
   products: normalizedItems,
   amount: body.amount,
-  currency: body.currency || "usd",
+currency: "aud",
   paymentId: body.paymentId || null,
   status: orderStatus, // <-- pending if payment succeeded
 });
 
     // 2️⃣ Create a corresponding transaction
-    const transaction = await Transaction.create({
+   const transaction = await Transaction.create({
   user: decoded.id,
   amount: body.amount,
-  status: transactionStatus, // <-- completed if payment succeeded
+  currency: "aud",
+  status: transactionStatus,
   paymentMethod: "stripe",
   stripePaymentIntentId: body.paymentId || null,
 });

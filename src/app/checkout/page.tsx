@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
@@ -10,6 +11,7 @@ import Image from "next/image";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 export default function CheckoutPage() {
+  const router = useRouter(); // 👈 ADD THIS
   const { cart } = useCart();
   const [countries, setCountries] = useState<string[]>([]);
   const [countryLoading, setCountryLoading] = useState(true);
@@ -22,6 +24,13 @@ export default function CheckoutPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    router.replace("/auth?redirect=/checkout");
+  }
+}, [router]);
 
   // Coupon states
   const [couponCode, setCouponCode] = useState("");
@@ -32,6 +41,13 @@ export default function CheckoutPage() {
   } | null>(null);
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
+// useEffect(() => {
+//   const token = localStorage.getItem("token");
+
+//   if (!token) {
+//     router.replace("/login?redirect=/checkout");
+//   }
+// }, [router]);
 
   // Subtotal
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -223,9 +239,8 @@ export default function CheckoutPage() {
                 placeholder="Enter 4-digit postcode"
                 value={postcode}
                 onChange={(e) => setPostcode(e.target.value)}
-                className={`border p-3 rounded-md w-full ${
-                  postcodeError ? "border-red-500" : ""
-                }`}
+                className={`border p-3 rounded-md w-full ${postcodeError ? "border-red-500" : ""
+                  }`}
               />
               {postcodeError && <p className="text-sm text-red-600 mt-1">{postcodeError}</p>}
             </div>

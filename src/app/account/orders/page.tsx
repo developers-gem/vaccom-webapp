@@ -32,6 +32,15 @@ interface OrdersApiResponse {
 const getUserToken = () =>
   typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
+const formatMoney = (amount: number, currency = "aud") => {
+  const locale = currency.toLowerCase() === "aud" ? "en-AU" : "en-US";
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency.toUpperCase(),
+  }).format(amount);
+};
+
 // ✅ Status colors
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
@@ -64,7 +73,7 @@ export default function OrdersPage() {
   async function fetchOrders() {
     const token = getUserToken();
     if (!token) {
-      router.push("/login");
+      router.push("/auth");
       return;
     }
 
@@ -76,7 +85,7 @@ export default function OrdersPage() {
       if (!res.ok) {
         if (res.status === 401) {
           localStorage.removeItem("token");
-          router.push("/login");
+          router.push("/auth");
           return;
         }
         throw new Error(`Failed to fetch orders (${res.status})`);
@@ -102,7 +111,7 @@ export default function OrdersPage() {
           hoverImage: p.hoverImage || p.image || "/placeholder.png",
         })),
         amount: Number(o.amount) || 0,
-        currency: "USD",
+currency: (o.currency || "aud").toUpperCase(),
         createdAt: o.createdAt,
         status: o.status || "Pending",
       }));
@@ -339,17 +348,13 @@ export default function OrdersPage() {
                   <p className="font-medium">{item.name}</p>
                   <p className="text-sm text-gray-600">
                     Qty: {item.qty} ×{" "}
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(item.price)}
+{formatMoney(item.price, order.currency)}
+
                   </p>
                 </div>
                 <p className="font-semibold">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  }).format(item.price * item.qty)}
+                  {formatMoney(item.price * item.qty, order.currency)}
+
                 </p>
               </div>
             ))}
@@ -358,10 +363,8 @@ export default function OrdersPage() {
             <div className="border-t pt-3 flex justify-between items-center mt-2">
               <span className="font-medium">Total Amount:</span>
               <span className="font-bold text-lg">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(order.amount)}
+               {formatMoney(order.amount, order.currency)}
+
               </span>
             </div>
           </div>
