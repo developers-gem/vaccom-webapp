@@ -49,11 +49,13 @@ export default function CheckoutForm({
 
     try {
       // 1️⃣ Create PaymentIntent
-      const checkoutRes = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: totalAmount * 100, currency: "usd" }),
-      });
+      const checkoutRes = await fetch("/api/create-payment-intent", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    totalAmount: totalAmount, // ✅ NO *100
+  }),
+});
       if (!checkoutRes.ok) throw new Error("Failed to create PaymentIntent");
 
       const { clientSecret }: { clientSecret: string } = await checkoutRes.json();
@@ -95,7 +97,7 @@ export default function CheckoutForm({
             image: item.imageUrl || "/placeholder.png",
           })),
           amount: totalAmount,
-          currency: "usd",
+          currency: "aud",
           paymentId: paymentIntent.id,
           email,
           shipping,
