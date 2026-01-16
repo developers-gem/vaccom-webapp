@@ -45,7 +45,7 @@ export default function RootLayout({
         </Script>
       </head>
 
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <Providers session={session}>
           <ClientLayout>{children}</ClientLayout>
         </Providers>
