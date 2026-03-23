@@ -5,7 +5,7 @@ import ProductCard from "@/app/components/ProductCard";
 
 interface Product {
   _id: string;
-    slug: string;   // ← ADD THIS
+    slug: string;   
   name: string;
   price: number;
   salePrice?: number;
