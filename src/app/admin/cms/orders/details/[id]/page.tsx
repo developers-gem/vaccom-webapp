@@ -21,6 +21,8 @@ interface OrderDetail {
   address?: {
     fullName: string;
     phone: string;
+     street?: string;   
+  city?: string;     
     state: string;
     postalCode: string;
     country: string;
@@ -175,9 +177,19 @@ export default function AdminOrderDetailsPage() {
 <div className="bg-gray-50 p-4 rounded border mt-2">
   <p><strong>Name:</strong> {order.address?.fullName || "-"}</p>
   <p><strong>Phone:</strong> {order.address?.phone || "-"}</p>
-  <p><strong>State:</strong> {order.address?.state || "-"}</p>
-  <p><strong>Postcode:</strong> {order.address?.postalCode || "-"}</p>
-  <p><strong>Country:</strong> {order.address?.country || "-"}</p>
+
+  <p className="mt-1">
+    <strong>Address:</strong>{" "}
+    {[
+      order.address?.street,
+      order.address?.city,
+      order.address?.state,
+      order.address?.postalCode,
+      order.address?.country,
+    ]
+      .filter(Boolean)
+      .join(", ") || "-"}
+  </p>
 </div>
       {/* ✅ Update Status */}
       <div className="mt-4 flex items-center gap-2">

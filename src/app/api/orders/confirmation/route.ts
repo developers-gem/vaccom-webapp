@@ -9,7 +9,7 @@ type OrderItem = {
 
 export async function POST(req: Request) {
   try {
-    const { orderId, email, items, amount } = await req.json();
+    const { orderId, email, items, amount, address } = await req.json();
 
     console.log("📩 Confirmation request received:", {
       orderId,
@@ -31,6 +31,24 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+
+    const addressHtml = `
+  <p><strong>Shipping Address:</strong></p>
+  <p>
+    ${address?.fullName || ""}<br/>
+    ${address?.phone || ""}<br/>
+    ${[
+      address?.street,
+      address?.city,
+      address?.state,
+      address?.postalCode,
+      address?.country,
+    ]
+      .filter(Boolean)
+      .join(", ")}
+  </p>
+`;
 
     // ✅ Mail transporter
     const transporter = nodemailer.createTransport({
@@ -65,6 +83,8 @@ export async function POST(req: Request) {
 
         <p><strong>Order ID:</strong> ${orderId}</p>
 
+          ${addressHtml}  
+
         <p><strong>Items:</strong></p>
         <ul>${itemsHtml}</ul>
 
@@ -88,6 +108,8 @@ export async function POST(req: Request) {
 
         <p><strong>Order ID:</strong> ${orderId}</p>
         <p><strong>Customer Email:</strong> ${email}</p>
+        
+${addressHtml}
 
         <p><strong>Items:</strong></p>
         <ul>${itemsHtml}</ul>

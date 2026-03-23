@@ -10,9 +10,11 @@ interface Order {
   status: string;
   createdAt: string;
   currency: string;
-   address?: {
+  address?: {
     fullName: string;
     phone: string;
+    street?: string;   // ✅ ADD
+    city?: string;     // ✅ ADD
     state: string;
     postalCode: string;
     country: string;
@@ -24,7 +26,7 @@ interface Order {
     qty?: number | string;
     image?: string;
     imageUrl?: string;
-    
+
   }[];
 }
 
@@ -84,34 +86,34 @@ export default function OrdersList() {
 
   // ✅ Handle status update
   const handleStatusUpdate = async (orderId: string) => {
-  const newStatus = selectedStatuses[orderId];
-  if (!newStatus) return;
+    const newStatus = selectedStatuses[orderId];
+    if (!newStatus) return;
 
-  setUpdatingId(orderId);
-  try {
-    const res = await fetch(`/api/admin/orders/${orderId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus }),
-    });
+    setUpdatingId(orderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.success && data.order) {
-      setOrders((prev) =>
-        prev.map((o) => (o._id === orderId ? data.order : o))
-      );
-      alert("Order status updated!");
-    } else {
-      alert(data.message || "Failed to update order status");
+      if (data.success && data.order) {
+        setOrders((prev) =>
+          prev.map((o) => (o._id === orderId ? data.order : o))
+        );
+        alert("Order status updated!");
+      } else {
+        alert(data.message || "Failed to update order status");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Unexpected error while updating order status");
+    } finally {
+      setUpdatingId(null);
     }
-  } catch (err) {
-    console.error(err);
-    alert("Unexpected error while updating order status");
-  } finally {
-    setUpdatingId(null);
-  }
-};
+  };
 
 
   // ✅ Filter orders by time
@@ -206,13 +208,20 @@ export default function OrdersList() {
               <strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}
             </p>
 
-            <div className="mt-2 text-sm bg-gray-50 p-3 rounded border">
-  <p><strong>Name:</strong> {order.address?.fullName || "-"}</p>
-  <p><strong>Phone:</strong> {order.address?.phone || "-"}</p>
-  <p><strong>State:</strong> {order.address?.state || "-"}</p>
-  <p><strong>Postcode:</strong> {order.address?.postalCode || "-"}</p>
-  <p><strong>Country:</strong> {order.address?.country || "-"}</p>
-</div>
+              <p><strong>Phone:</strong> {order.address?.phone || "-"}</p>
+
+              <p className="mt-1">
+                <strong>Address:</strong>{" "}
+                {[
+                  order.address?.street,
+                  order.address?.city,
+                  order.address?.state,
+                  order.address?.postalCode,
+                  order.address?.country,
+                ]
+                  .filter(Boolean)
+                  .join(", ") || "-"}
+              </p>
 
             {/* Status Update Dropdown + Button */}
             <div className="mt-2 flex items-center gap-2">

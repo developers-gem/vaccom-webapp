@@ -42,6 +42,7 @@ export async function GET(req: Request) {
 }
 
 // POST: create new order + create transaction + set correct status
+// POST: create new order + create transaction + set correct status
 export async function POST(req: Request) {
   try {
     await connectToDatabase();
@@ -60,57 +61,71 @@ export async function POST(req: Request) {
     if (!userEmail)
       return NextResponse.json({ error: "Email is required" }, { status: 400 });
 
-    const normalizedItems = body.items.map((item: any) => ({
+    // ✅ Normalize items safely
+    const normalizedItems = (body.items || []).map((item: any) => ({
       productId: item._id || item.productId,
       name: item.name,
-      price: item.price,
-      qty: item.qty,
+      price: Number(item.price),
+      qty: Number(item.qty) || 1,
       image: item.image || "/placeholder.png",
     }));
 
-let orderStatus: "pending" | "failed" = "pending"; // default
-let transactionStatus: "completed" | "failed" | "pending" = "pending"; // <-- declare first
+    // ✅ Default statuses
+    let orderStatus: "pending" | "failed" = "pending";
+    let transactionStatus: "completed" | "failed" | "pending" = "pending";
 
+    // ✅ Stripe verification (only if real paymentId)
+    if (body.paymentId && body.paymentId !== "test_payment") {
+      try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(body.paymentId);
 
-    // ✅ If paymentId is provided, check Stripe payment status
-   if (body.paymentId) {
-  try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(body.paymentId);
-    if (paymentIntent.status === "succeeded") {
-      orderStatus = "pending"; // Not completed
-      transactionStatus = "completed"; // Transaction is completed
-    } else {
-      orderStatus = "failed";
-      transactionStatus = "failed";
+        if (paymentIntent.status === "succeeded") {
+          orderStatus = "pending"; // order still needs processing
+          transactionStatus = "completed";
+        } else {
+          orderStatus = "failed";
+          transactionStatus = "failed";
+        }
+      } catch (err) {
+        console.error("Stripe retrieval error:", err);
+        orderStatus = "failed";
+        transactionStatus = "failed";
+      }
     }
-  } catch (err) {
-    console.error("Stripe retrieval error:", err);
-  }
-}
-    // 1️⃣ Create the order
+
+    // ✅ Create order
     const order = await Order.create({
-  user: decoded.id,
-  userEmail,
-  products: normalizedItems,
-  amount: body.amount,
-currency: "aud",
-  paymentId: body.paymentId || null,
-  status: orderStatus, 
-  address: body.address || {},
+      user: decoded.id,
+      userEmail,
+      products: normalizedItems,
+      amount: Number(body.amount),
+      currency: "aud",
+      paymentId: body.paymentId || null,
+      status: orderStatus,
 
-});
+      // ✅ VERY IMPORTANT (safe address)
+      address: {
+        fullName: body.address?.fullName || "",
+        phone: body.address?.phone || "",
+        street: body.address?.street || "",
+        city: body.address?.city || "",
+        state: body.address?.state || "",
+        postalCode: body.address?.postalCode || "",
+        country: body.address?.country || "",
+      },
+    });
 
-    // 2️⃣ Create a corresponding transaction
-   const transaction = await Transaction.create({
-  user: decoded.id,
-  amount: body.amount,
-  currency: "aud",
-  status: transactionStatus,
-  paymentMethod: "stripe",
-  stripePaymentIntentId: body.paymentId || null,
-});
+    // ✅ Create transaction
+    await Transaction.create({
+      user: decoded.id,
+      amount: Number(body.amount),
+      currency: "aud",
+      status: transactionStatus,
+      paymentMethod: "stripe",
+      stripePaymentIntentId: body.paymentId || null,
+    });
 
-    // 3️⃣ Send confirmation email
+    // ✅ Send confirmation email (with address)
     try {
       await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/confirmation`,
@@ -122,6 +137,7 @@ currency: "aud",
             email: userEmail,
             items: order.products,
             amount: order.amount,
+            address: order.address, // ✅ INCLUDED
           }),
         }
       );
@@ -130,6 +146,7 @@ currency: "aud",
     }
 
     return NextResponse.json({ success: true, order }, { status: 201 });
+
   } catch (err: any) {
     console.error("Order POST error:", err);
     return NextResponse.json(
