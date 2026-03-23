@@ -22,8 +22,22 @@ const OrderSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
 currency: { type: String, default: "aud", lowercase: true },
 
+// ✅ Shipping Address
+address: {
+  type: {
+    fullName: String,
+    phone: String,
+    street: String,
+    city: String,
+    state: String,
+    postalCode: String,
+    country: String,
+  },
+  default: {},
+},
+
   // ✅ New fields
-  paymentId: { type: String, index: true }, // Stripe PaymentIntent ID
+  paymentId: { type: String, index: true }, 
   status: { type: String, enum: ["pending", "completed", "failed"], default: "pending" },
 
   createdAt: { type: Date, default: Date.now },

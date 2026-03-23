@@ -95,7 +95,9 @@ let transactionStatus: "completed" | "failed" | "pending" = "pending"; // <-- de
   amount: body.amount,
 currency: "aud",
   paymentId: body.paymentId || null,
-  status: orderStatus, // <-- pending if payment succeeded
+  status: orderStatus, 
+  address: body.address || {},
+
 });
 
     // 2️⃣ Create a corresponding transaction

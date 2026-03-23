@@ -10,6 +10,13 @@ interface Order {
   status: string;
   createdAt: string;
   currency: string;
+   address?: {
+    fullName: string;
+    phone: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
   products: {
     productId: string;
     name: string;
@@ -17,6 +24,7 @@ interface Order {
     qty?: number | string;
     image?: string;
     imageUrl?: string;
+    
   }[];
 }
 
@@ -197,6 +205,14 @@ export default function OrdersList() {
             <p>
               <strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}
             </p>
+
+            <div className="mt-2 text-sm bg-gray-50 p-3 rounded border">
+  <p><strong>Name:</strong> {order.address?.fullName || "-"}</p>
+  <p><strong>Phone:</strong> {order.address?.phone || "-"}</p>
+  <p><strong>State:</strong> {order.address?.state || "-"}</p>
+  <p><strong>Postcode:</strong> {order.address?.postalCode || "-"}</p>
+  <p><strong>Country:</strong> {order.address?.country || "-"}</p>
+</div>
 
             {/* Status Update Dropdown + Button */}
             <div className="mt-2 flex items-center gap-2">

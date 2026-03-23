@@ -19,6 +19,13 @@ interface OrderDetail {
   status: string;
   createdAt: string;
   currency: string;
+  address?: {
+  fullName: string;
+  phone: string;
+  state: string;
+  postalCode: string;
+  country: string;
+};
 }
 
 export async function GET(req: Request) {
@@ -39,6 +46,8 @@ export async function GET(req: Request) {
       createdAt: order.createdAt,
       currency: order.currency,
       amount: Number(order.amount),
+        address: order.address || {},
+
       products: order.products.map((p: any) => ({
         productId: p.productId?._id || p.productId,
         name: p.productId?.name || p.name,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
@@ -15,8 +14,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     if (!order)
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
 
-    return NextResponse.json(order, { status: 200 });
-  } catch (error) {
+return NextResponse.json(
+  { success: true, order },
+  { status: 200 }
+);
+
+
+} catch (error) {
     return NextResponse.json(
       { message: "Error fetching order", error },
       { status: 500 }

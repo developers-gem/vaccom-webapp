@@ -20,6 +20,15 @@ type CheckoutFormProps = {
   shipping: number;
   appliedCoupon?: { code: string; discount: number; finalAmount: number } | null;
   selectedCountry?: string;
+   address?: {
+    fullName: string;
+    phone: string;
+    street?: string;   
+  city?: string;     
+    state: string;
+    postalCode: string;
+    country: string;
+  };
 };
 
 export default function CheckoutForm({
@@ -28,6 +37,8 @@ export default function CheckoutForm({
   appliedCoupon,
   selectedCountry,
   shipping,
+  address, 
+
 }: CheckoutFormProps) {
   const { clearCart } = useCart();
   const stripe = useStripe();
@@ -37,6 +48,7 @@ export default function CheckoutForm({
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const totalAmount = (appliedCoupon ? appliedCoupon.finalAmount : subtotal) + shipping;
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,6 +115,8 @@ export default function CheckoutForm({
           shipping,
           coupon: appliedCoupon?.code || null,
           selectedCountry,
+            address,
+
         }),
       });
 

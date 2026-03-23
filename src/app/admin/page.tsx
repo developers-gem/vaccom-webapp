@@ -216,8 +216,9 @@ export default function AdminDashboard() {
               openMenu={openMenu}
               toggleMenu={toggleMenu}
               items={[
-                { label: "Orders", value: "orders" },
-                { label: "Orders List", value: "orders-list" },
+                { label: "Orders List", value: "orders" },
+                { label: "Orders Details", value: "orders-list" },
+                
               ]}
               onSelect={(val: string) => setActiveTab(val)}
               collapsed={collapsed}

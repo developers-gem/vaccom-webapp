@@ -24,13 +24,15 @@ export default function CheckoutPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-useEffect(() => {
-  const token = localStorage.getItem("token");
+  const [street, setStreet] = useState("");  // ✅ ADD
+const [city, setCity] = useState("");      // ✅ ADD
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  if (!token) {
-    router.replace("/auth?redirect=/checkout");
-  }
-}, [router]);
+    if (!token) {
+      router.replace("/auth?redirect=/checkout");
+    }
+  }, [router]);
 
   // Coupon states
   const [couponCode, setCouponCode] = useState("");
@@ -41,13 +43,13 @@ useEffect(() => {
   } | null>(null);
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
-// useEffect(() => {
-//   const token = localStorage.getItem("token");
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
 
-//   if (!token) {
-//     router.replace("/login?redirect=/checkout");
-//   }
-// }, [router]);
+  //   if (!token) {
+  //     router.replace("/login?redirect=/checkout");
+  //   }
+  // }, [router]);
 
   // Subtotal
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -156,6 +158,8 @@ useEffect(() => {
     lastName &&
     email &&
     phone &&
+    street &&   
+  city &&     
     selectedState &&
     postcode &&
     !postcodeError;
@@ -196,7 +200,21 @@ useEffect(() => {
               onChange={(e) => setPhone(e.target.value)}
               className="border p-3 rounded-md w-full md:col-span-2"
             />
+<input
+  type="text"
+  placeholder="Street Address"
+  value={street}
+  onChange={(e) => setStreet(e.target.value)}
+  className="border p-3 rounded-md w-full md:col-span-2"
+/>
 
+<input
+  type="text"
+  placeholder="City"
+  value={city}
+  onChange={(e) => setCity(e.target.value)}
+  className="border p-3 rounded-md w-full md:col-span-2"
+/>
             {/* Country */}
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1">Country/Region</label>
@@ -284,6 +302,15 @@ useEffect(() => {
               shipping={shipping}
               appliedCoupon={appliedCoupon}
               selectedCountry={selectedCountry}
+              address={{
+                fullName: `${firstName} ${lastName}`,
+                phone,
+                street,
+                city,
+                state: selectedState,
+                postalCode: postcode,
+                country: selectedCountry,
+              }}
             />
           </div>
         </div>

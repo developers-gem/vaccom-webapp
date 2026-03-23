@@ -18,6 +18,13 @@ interface OrderDetail {
   status: string;
   createdAt: string;
   currency: string;
+  address?: {
+    fullName: string;
+    phone: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
 }
 
 export default function AdminOrderDetailsPage() {
@@ -162,7 +169,16 @@ export default function AdminOrderDetailsPage() {
       <p>
         <strong>Created At:</strong> {new Date(order.createdAt).toLocaleString()}
       </p>
+      
+<h2 className="text-lg font-semibold mt-4">Shipping Address</h2>
 
+<div className="bg-gray-50 p-4 rounded border mt-2">
+  <p><strong>Name:</strong> {order.address?.fullName || "-"}</p>
+  <p><strong>Phone:</strong> {order.address?.phone || "-"}</p>
+  <p><strong>State:</strong> {order.address?.state || "-"}</p>
+  <p><strong>Postcode:</strong> {order.address?.postalCode || "-"}</p>
+  <p><strong>Country:</strong> {order.address?.country || "-"}</p>
+</div>
       {/* ✅ Update Status */}
       <div className="mt-4 flex items-center gap-2">
         <label className="font-semibold">Update Status: </label>
